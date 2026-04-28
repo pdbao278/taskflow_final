@@ -310,12 +310,6 @@ router.delete('/members/:id', async (req: AuthRequest, res: Response): Promise<v
     // Delete the member
     await prisma.workspaceMember.delete({ where: { id: req.params.id } });
 
-    // Unassign tasks in this workspace that were assigned to removed user
-    await prisma.task.updateMany({
-      where: { workspaceId, assigneeId: target.userId, deletedAt: null },
-      data: { assigneeId: null },
-    });
-
     // Notify managers about unassigned tasks
     const managers = await prisma.workspaceMember.findMany({
       where: { workspaceId, role: { in: ['Admin', 'Manager'] } },
@@ -326,7 +320,7 @@ router.delete('/members/:id', async (req: AuthRequest, res: Response): Promise<v
         await createNotification({
           userId: mgr.userId,
           type: 'assignee_removed',
-          message: `Assignee ${target.user.name} đã rời workspace. Các task của họ hiện là chưa giao.`,
+          message: `Assignee ${target.user.name} đã bị xóa khỏi workspace. Các task của họ hiện cần được giao lại.`,
         });
       }
     }

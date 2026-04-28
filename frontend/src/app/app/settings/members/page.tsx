@@ -483,7 +483,7 @@ export default function MembersPage() {
             </h3>
             <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '24px', lineHeight: 1.6 }}>
               Bạn chắc chắn muốn xóa <strong>{memberToDelete.name}</strong> khỏi workspace?{' '}
-              Các task đã assign cho người này sẽ trở thành chưa giao.
+              Task đã assign sẽ hiển thị &apos;[Removed User]&apos;.
             </p>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
               <button

@@ -32,6 +32,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         cursor: 'pointer',
         transition: 'box-shadow 0.2s, border-color 0.2s, transform 0.15s',
         boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.1)';
@@ -98,35 +101,37 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </p>
       )}
 
-      {/* Row 3: Progress inline — icon + task count + percentage */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-        <CheckCircle2 size={14} color="var(--success)" style={{ flexShrink: 0 }} />
-        <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 500 }}>
-          {taskCount.done}/{taskCount.total} tasks
-        </span>
-        <span style={{ marginLeft: 'auto', fontSize: '12px', color: 'var(--text-muted)', fontWeight: 600 }}>
-          {percentage}%
-        </span>
-      </div>
+      <div style={{ marginTop: 'auto' }}>
+        {/* Row 3: Progress inline — icon + task count + percentage */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+          <CheckCircle2 size={14} color="var(--success)" style={{ flexShrink: 0 }} />
+          <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 500 }}>
+            {taskCount.done}/{taskCount.total} tasks
+          </span>
+          <span style={{ marginLeft: 'auto', fontSize: '12px', color: 'var(--text-muted)', fontWeight: 600 }}>
+            {percentage}%
+          </span>
+        </div>
 
-      {/* Row 4: Progress bar */}
-      <div
-        style={{
-          height: '6px',
-          background: 'var(--muted)',
-          borderRadius: '9999px',
-          overflow: 'hidden',
-        }}
-      >
+        {/* Row 4: Progress bar */}
         <div
           style={{
-            height: '100%',
-            width: `${percentage}%`,
-            background: progressFill,
+            height: '6px',
+            background: 'var(--muted)',
             borderRadius: '9999px',
-            transition: 'width 0.5s ease',
+            overflow: 'hidden',
           }}
-        />
+        >
+          <div
+            style={{
+              height: '100%',
+              width: `${percentage}%`,
+              background: progressFill,
+              borderRadius: '9999px',
+              transition: 'width 0.5s ease',
+            }}
+          />
+        </div>
       </div>
     </div>
   );

@@ -242,4 +242,54 @@ router.patch('/:id/archive', async (req: AuthRequest, res: Response): Promise<vo
   }
 });
 
+// ─── GET /api/projects/:id/tasks — list tasks in project ────────────────────────
+router.get('/:id/tasks', async (req: AuthRequest, res: Response): Promise<void> => {
+  const workspaceId = req.headers['x-workspace-id'] as string;
+  if (!workspaceId) {
+    res.status(400).json({ success: false, error: 'x-workspace-id header required' });
+    return;
+  }
+
+  try {
+    const member = await getWorkspaceMember(workspaceId, req.user!.userId);
+    if (!member) {
+      res.status(403).json({ success: false, error: 'Forbidden' });
+      return;
+    }
+
+    // Verify project belongs to workspace
+    const project = await prisma.project.findFirst({
+      where: { id: req.params.id, workspaceId },
+    });
+    if (!project) {
+      res.status(404).json({ success: false, error: 'Dự án không tồn tại.' });
+      return;
+    }
+
+    const tasks = await prisma.task.findMany({
+      where: {
+        projectId: req.params.id,
+        workspaceId,
+        deletedAt: null,
+      },
+      include: {
+        project: { select: { id: true, name: true, color: true } },
+        creator: { select: { id: true, name: true } },
+        assignee: { select: { id: true, name: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const tasksWithOverdue = tasks.map(t => {
+      const isOverdue = t.dueDate && t.dueDate < new Date() && t.status !== 'Done';
+      return { ...t, isOverdue: !!isOverdue };
+    });
+
+    res.json({ success: true, data: { tasks: tasksWithOverdue } });
+  } catch (err) {
+    console.error('List project tasks error:', err);
+    res.status(500).json({ success: false, error: 'Có lỗi xảy ra. Thử lại?' });
+  }
+});
+
 export default router;

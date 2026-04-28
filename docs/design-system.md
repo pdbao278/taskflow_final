@@ -513,7 +513,7 @@ Khi bấm vào Workspace Switcher, dropdown mở ra (float bên trên sidebar, k
 | Thuộc tính | Chi tiết |
 |------------|----------|
 | **Select** | Dropdown chọn 1 giá trị — dùng cho: Priority, Status, Role, Project |
-| **Combobox** | Select + search — dùng cho: Assignee picker (search member by name) |
+| **Combobox** | Select + search (không áp dụng cho Assignee, Assignee dùng Dropdown list thường) |
 | **States** | `default`, `open`, `focus`, `disabled`, `error` |
 | **Empty state** | "Không có kết quả" khi search không match |
 
@@ -689,7 +689,7 @@ Khi bấm vào Workspace Switcher, dropdown mở ra (float bên trên sidebar, k
 | **Cấu trúc** | Project label + Title + StatusBadge + PriorityBadge + Assignee (avatar + name) |
 | **Click** | Mở `TaskDetailSheet` (slide-over) |
 | **Drag** | Kéo **toàn bộ card** (không chỉ handle) trên Kanban board (desktop). `cursor: grab` / `active:cursor-grabbing`. Sau khi thả: optimistic UI + `toast.success("Đã đổi trạng thái thành [Status]")` — không reload trang, không flash |
-| **Removed User** | Assignee hiển thị "[Người dùng đã xóa]" với avatar placeholder xám |
+| **Removed User** | Assignee hiển thị "[Removed User]" với avatar placeholder xám |
 
 #### Card Variants
 
@@ -990,18 +990,18 @@ Mọi task card (cả 2 variant) phải hiển thị **đủ các thông tin sau
 
 ### 5.6 Form Tạo / Sửa Task
 
-| Field | Type | Validation | Placeholder / Default |
-|-------|------|------------|----------------------|
-| Tiêu đề * | Input | Required, max 200 chars | "Nhập tiêu đề task" |
-| Mô tả | Textarea | Optional, max 5000 chars | "Mô tả chi tiết (tùy chọn)" |
-| Dự án * | Select | Required | Chọn từ danh sách projects active |
-| Người thực hiện | Combobox | Optional, phải thuộc workspace | Search member by name |
-| Độ ưu tiên | Select | Default: Medium | Low / Medium / High / Urgent |
-| Ngày hết hạn | Date Picker | Optional, cho phép quá khứ | DD/MM/YYYY |
+| # | Field | Type | Validation | Placeholder / Default |
+|---|-------|------|------------|----------------------|
+| 1 | Tiêu đề * | Input | Required, max 200 chars | "Nhập tiêu đề task" |
+| 2 | Dự án * | Select | Required | Chọn từ danh sách projects active |
+| 3 | Người thực hiện | Dropdown | Optional, phải thuộc workspace (tất cả roles: Admin, Manager, Member) | Hiển thị danh sách thành viên workspace (avatar + tên + email), không có tìm kiếm |
+| 4 | Độ ưu tiên + Ngày hết hạn | Select + Date Picker | Default: Medium / Optional | 2 cột cùng hàng (`grid-cols-2`) |
+| 5 | Mô tả | Textarea | Optional, max 5000 chars | "Mô tả chi tiết (tùy chọn)" |
 
 - **Mở bằng:** Slide-over panel từ phải (khi tạo mới hoặc edit)
+- **Thứ tự hiển thị:** Required fields trước (Title → Project), metadata (Assignee → Priority + Due date), cuối cùng là Mô tả
 - **Submit tạo:** "Tạo task" → task xuất hiện ngay (optimistic) → toast success
-- **Submit sửa:** "Lưu thay đổi" → activity log ghi thay đổi
+- **Submit sửa (inline edit):** Click "Chỉnh sửa" → các field chuyển thành input/select **ngay tại chỗ** (inline), không mở form riêng. Nút "Lưu thay đổi" + "Hủy" nằm **dưới phần Mô tả** → activity log ghi thay đổi
 - **Error assignee ngoài workspace:** "Người thực hiện phải thuộc workspace hiện tại"
 - **Error project archived:** "Dự án đã archive, không thể tạo task mới"
 
@@ -1205,9 +1205,9 @@ Dùng ở 2 nơi:
     - Mỗi pending invite: email + `RoleBadge` + `PendingBadge` (warning-bg, warning text) + **countdown timer**
     - **Countdown format:** `HH:MM:SS` đếm ngược thời gian thực (cập nhật mỗi giây, font monospace). Khi hết hạn: "Đã hết hạn" (text destructive)
     - Empty pending: ẩn section, không hiện empty state
-- **Xóa member confirm:** "Bạn chắc chắn muốn xóa [name] khỏi workspace? Các task đã assign cho người này sẽ trở thành chưa giao."
+- **Xóa member confirm:** "Bạn chắc chắn muốn xóa [name] khỏi workspace? Task đã assign sẽ hiển thị '[Removed User]'."
 - **Admin tự xóa:** Nút disabled + tooltip "Không thể xóa Admin đang đăng nhập."
-- **Removed user tasks:** Task hiển thị "[Người dùng đã xóa]" thay tên assignee
+- **Removed user tasks:** Task giữ nguyên `assigneeId` trong DB. Backend tự động đối chiếu và trả về cờ `isAssigneeRemoved: true`. Frontend dựa vào cờ này để hiển thị "[Removed User]" thay tên assignee cùng avatar xám (RU).
 
 ### 7.3 FR-03: Quản lý Project
 
@@ -1248,6 +1248,7 @@ Dùng ở 2 nơi:
   - `bg-white rounded-xl border p-4 shadow-sm` (padding nhỏ hơn: 16px)
   - **Hàng 1:** Color dot (12px circle, `background: project.color`) + tên project (`text-sm font-semibold`) + `ArchivedBadge` (nếu archived, chỉ trong section archive)
   - **Hàng 2:** Mô tả (truncated 1 dòng `text-ellipsis`, `text-xs text-text-secondary word-break-all`). Chỉ hiện khi có description. Text dài không ngắt → `word-break: break-all` + `min-width: 0`
+  - **Layout Flex:** Card dùng `flex flex-col h-full`, phần trạng thái (Hàng 3 & 4) được bọc trong một khối với `margin-top: auto` để đẩy sát xuống đáy card. Chiều cao của khối trạng thái và thanh progress luôn đồng đều và cố định ở đáy dù có hay không có mô tả.
   - **Hàng 3 — Progress inline:** Icon check (✅ `text-success`, 14px) + `"[done]/[total] tasks"` (`text-xs text-text-muted`) + percentage (`text-xs font-semibold`) căn phải
   - **Hàng 4 — Progress bar:** `h-1.5 rounded-full bg-muted`, fill gradient xanh lá (success). Archived → fill `hsl(38 92% 50%)` (warning/vàng olive) để phân biệt
 - **Nút "+ Tạo project":** Primary button, chỉ hiển thị cho Admin/Manager. Nằm cùng hàng section header active
@@ -1421,9 +1422,9 @@ Assignee                 Hạn hoàn thành
 | **Comment input** | Rounded input bar. Placeholder "Viết bình luận (@ để nhắc tên)..." + Send button (icon ➤, primary color) |
 | **Empty** | "Chưa có bình luận nào. Hãy viết bình luận đầu tiên." |
 
-- **Assignee "[Người dùng đã xóa]":** Avatar xám + text italic
-- **Overdue:** `OverdueBadge` hiển thị cạnh title (góc phải)
-- **Edit fields:** Click "Chỉnh sửa" → enable inline edit cho title, assignee, priority, due date, description
+- **Assignee "[Removed User]":** Avatar xám + text italic
+- **Overdue:** `OverdueBadge` hiển thị cạnh title (góc phải), dùng `AlertCircle` icon + "Overdue", `rounded-full`
+- **Edit fields:** Click "Chỉnh sửa" → enable inline edit cho title, assignee, priority, due date, description. Nút **"Lưu thay đổi"** (primary) + **"Hủy"** (outlined) nằm **dưới phần Mô tả**, trước tabs
 - **Permission:** Chỉ Creator/Assignee/Manager/Admin có nút "Chỉnh sửa". Member xem task khác → read-only (ẩn edit/delete)
 
 #### States của Task Detail Sheet
@@ -2101,7 +2102,7 @@ Row 4: [Avatar] Name        Due Date   (space-between, text-sm)
 | Soft delete | Task dùng `deleted_at` timestamp; không hard delete | Trash page (7.13) — restore trong 30 ngày |
 | Restore window | Admin restore task trong vòng 30 ngày kể từ ngày xóa | RestoreButton disabled + tooltip khi > 30 ngày |
 | Activity log | Không thể xóa (`DELETE /activity` → 404/405) | Read-only tab "Hoạt động" trong TaskDetail (7.4) |
-| Assignee removed | Task giữ nguyên, hiển thị `[Người dùng đã xóa]` với avatar xám | KanbanBoard, TaskDetailSheet |
+| Assignee removed | Task giữ nguyên `assigneeId`, Backend trả về cờ `isAssigneeRemoved: true`, hiển thị `[Removed User]` với avatar xám | KanbanBoard, TaskDetailSheet |
 
 ### 10.8 NFR-08 — Browser Support
 
@@ -2175,7 +2176,7 @@ Row 4: [Avatar] Name        Due Date   (space-between, text-sm)
 |--------|-------|-------------|
 | Xóa workspace | "Xóa workspace" | "Bạn chắc chắn muốn xóa workspace **[name]**? Tất cả dữ liệu sẽ bị xóa vĩnh viễn." |
 | Xóa task | "Xóa task" | "Task sẽ được chuyển vào thùng rác. Admin có thể khôi phục trong 30 ngày." |
-| Xóa member | "Xóa thành viên" | "Bạn chắc chắn muốn xóa **[name]** khỏi workspace? Task đã assign sẽ hiển thị '[Người dùng đã xóa]'." |
+| Xóa member | "Xóa thành viên" | "Bạn chắc chắn muốn xóa **[name]** khỏi workspace? Task đã assign sẽ hiển thị '[Removed User]'." |
 | Xóa comment | "Xóa comment" | "Bạn chắc chắn muốn xóa comment này?" |
 
 #### Error Messages
@@ -2234,7 +2235,7 @@ Row 4: [Avatar] Name        Due Date   (space-between, text-sm)
 | Archived | Đã archive |
 | Pending | Đang chờ |
 | Overdue | Quá hạn |
-| Removed User | Người dùng đã xóa |
+| Removed User | Bị xóa khỏi workspace |
 | Unassigned | Chưa phân công |
 | N/A (rate) | N/A |
 

@@ -8,6 +8,7 @@ import authRoutes from './routes/auth.routes';
 import workspaceRoutes from './routes/workspace.routes';
 import inviteRoutes from './routes/invite.routes';
 import projectRoutes from './routes/project.routes';
+import taskRoutes from './routes/task.routes';
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/workspaces', workspaceRoutes);
 app.use('/api/invite', inviteRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/api/tasks', taskRoutes);
 
 // ─── Error Handler ────────────────────────────────────────────────────────────
 app.use(errorHandler);

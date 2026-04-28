@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/features/auth/stores/auth.store';
 import { useWorkspaceStore, MemberRole } from '@/features/workspace/stores/workspace.store';
+import { useProjectStore } from '@/features/projects/stores/project.store';
+import CreateTaskSheet from '@/features/tasks/components/CreateTaskSheet';
 import toast from 'react-hot-toast';
 
 interface NavItem {
@@ -61,13 +63,16 @@ export default function AppSidebar() {
   const router = useRouter();
   const { user } = useAuthStore();
   const { workspaces, currentWorkspaceId, currentRole, setCurrentWorkspace, loadWorkspaces } = useWorkspaceStore();
+  const { loadProjects } = useProjectStore();
   const [wsDropdownOpen, setWsDropdownOpen] = useState(false);
+  const [showCreateTask, setShowCreateTask] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Load workspaces on mount
   useEffect(() => {
     loadWorkspaces();
-  }, [loadWorkspaces]);
+    loadProjects();
+  }, [loadWorkspaces, loadProjects]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -208,6 +213,7 @@ export default function AppSidebar() {
               border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
               transition: 'background 0.15s',
             }}
+            onClick={() => setShowCreateTask(true)}
             onMouseEnter={e => (e.currentTarget.style.background = 'var(--primary-hover)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'var(--primary)')}
           >
@@ -292,6 +298,13 @@ export default function AppSidebar() {
           </div>
         </div>
       </div>
+
+      {/* Create Task Sheet */}
+      <CreateTaskSheet
+        open={showCreateTask}
+        onClose={() => setShowCreateTask(false)}
+        onCreated={() => loadProjects()}
+      />
     </aside>
   );
 }

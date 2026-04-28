@@ -11,11 +11,15 @@ import {
   validateRestore,
 } from '../services/task.service';
 import { createNotification } from '../services/notification.service';
+import commentRoutes from './comment.routes';
 
 const router = Router();
 
 // All task routes require auth
 router.use(authMiddleware);
+
+// Mount comment routes
+router.use('/:taskId/comments', commentRoutes);
 
 // ─── Helper: get workspace member + role ──────────────────────────────────────
 async function getWorkspaceMember(workspaceId: string, userId: string) {

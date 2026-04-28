@@ -1011,11 +1011,23 @@ Mọi task card (cả 2 variant) phải hiển thị **đủ các thông tin sau
 |-------|------|------------|-------------|
 | Nội dung | Textarea | Required, not empty | "Viết comment..." |
 
-- **@mention:** Khi gõ `@`, hiển thị autocomplete dropdown danh sách members workspace
-- **Submit:** Button "Gửi" hoặc Ctrl+Enter
+- **@mention:** Khi gõ `@`, hiển thị autocomplete dropdown danh sách members workspace.
+  - **Popup Mention Layout:** Floating box `bottom-full mb-2` (nổi lên phía trên), width `280px`, có `box-shadow` lớn. Các mục bên trong được padding `10px 12px`, background highlight (opacity 8%) khi dùng phím mũi tên lướt qua.
+- **Khung nhập liệu (Wrapper):** Bo góc `12px`, padding lề trong `12px` (gap 12px giữa input và nút gửi), màu nền `surface`, có viền `border`.
+- **Submit:** Button "Gửi" hoặc Ctrl+Enter.
+  - Nút bấm `h-9` (36px), padding ngang `16px`, chứa chữ "Gửi" kèm icon Send.
+  - Nút tự động chuyển trạng thái disabled (`opacity: 0.6`) khi textarea rỗng.
 - **Error:** "Nội dung comment không được để trống"
 - **API error:** Toast error, nội dung comment vẫn giữ nguyên trong textarea (không mất)
 - **XSS:** Sanitize `<script>` → plain text
+
+### 5.7.1 Hiển thị danh sách bình luận (Comment Thread)
+
+- **Khoảng cách:** Giữa các bình luận (items) cách nhau `32px` (`space-y-8`) để tạo sự tách biệt rõ ràng và thoáng đãng hơn. Có `py-4` cho toàn bộ danh sách.
+- **Avatar:** Kích thước `36x36px` (`w-9 h-9`), lùi xuống `margin-top: 2px` để canh thẳng hàng (baseline) với tên người dùng và thời gian.
+- **Header bình luận:** Tên người dùng (`font-semibold`) và Thời gian (format: `HH:mm DD/MM/YYYY`, ví dụ: `14:30 28/04/2026`) canh thẳng theo `items-baseline`.
+- **Nội dung chữ:** Font size `14px`, áp dụng `leading-relaxed` để tăng khoảng cách giữa các dòng chữ, giúp dễ đọc khi comment dài.
+- **@mention text:** Tên người được nhắc sẽ được bọc trong một thẻ span màu chữ `primary` và nền `primary/10`, bo góc nhẹ (`px-0.5 rounded`).
 
 ### 5.8 Form Invite Member
 

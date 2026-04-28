@@ -9,6 +9,7 @@ import { useTaskStore, type Task, type UpdateTaskData } from '../stores/task.sto
 import { useWorkspaceStore } from '@/features/workspace/stores/workspace.store';
 import { useAuthStore } from '@/features/auth/stores/auth.store';
 import apiClient from '@/lib/api-client';
+import { CommentThread } from '@/features/comments/components/CommentThread';
 
 interface TaskDetailSheetProps {
   open: boolean;
@@ -44,7 +45,7 @@ function formatDate(d: string | null) {
 }
 
 export default function TaskDetailSheet({ open, onClose, task, onUpdated, onDeleted }: TaskDetailSheetProps) {
-  const { updateTask, deleteTask } = useTaskStore();
+  const { updateTask, deleteTask, updateTaskStatus } = useTaskStore();
   const { currentRole } = useWorkspaceStore();
   const { user } = useAuthStore();
 
@@ -419,7 +420,9 @@ export default function TaskDetailSheet({ open, onClose, task, onUpdated, onDele
                 </div>
               ) : <p style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center', padding: '16px' }}>Chưa có hoạt động</p>
             ) : (
-              <p style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center', padding: '16px' }}>Tính năng bình luận sẽ được cập nhật trong FR-06</p>
+              <div style={{ padding: '8px 0' }}>
+                <CommentThread taskId={task.id} />
+              </div>
             )}
           </div>
         </div>

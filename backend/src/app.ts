@@ -6,6 +6,7 @@ import { sanitizeInput } from './middleware/sanitize';
 import { errorHandler } from './middleware/error-handler';
 import authRoutes from './routes/auth.routes';
 import workspaceRoutes from './routes/workspace.routes';
+import inviteRoutes from './routes/invite.routes';
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.get('/health', (_req, res) => {
 // ─── API Routes ───────────────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
 app.use('/api/workspaces', workspaceRoutes);
+app.use('/api/invite', inviteRoutes);
 
 // ─── Error Handler ────────────────────────────────────────────────────────────
 app.use(errorHandler);

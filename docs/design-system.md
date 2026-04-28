@@ -327,8 +327,9 @@ Dùng cho: Tất cả route `/app/*`
 │ 📁 Dự án            │  ← /app/projects     (All roles)
 │ 📊 Báo cáo          │  ← /app/reports      (Admin, Manager)
 ├──────────────────────┤
-│ ⚙️ Cài đặt           │  ← /app/settings     (Admin only)
-│ 🗑️ Thùng rác         │  ← /app/trash        (Admin only)
+│ ⚙️ Cài đặt           │  ← /app/settings          (Admin only)
+│ 👥 Thành viên        │  ← /app/settings/members  (Admin only)
+│ 🗑️ Thùng rác         │  ← /app/trash             (Admin only)
 └──────────────────────┘
 ```
 
@@ -355,9 +356,9 @@ Khi bấm vào Workspace Switcher, dropdown mở ra (float bên trên sidebar, k
 | **Mỗi item** | Tên workspace (truncate) + `RoleBadge` (Admin/Manager/Member) |
 | **Active item** | Check icon ✔ bên trái + background `--primary/10` + text `--primary` |
 | **Chevron** | Quay lên (`▴`) khi mở, quay xuống (`▾`) khi đóng. Transition `duration-normal` |
-| **Footer dropdown** | Nút `+ Tạo workspace mới`, có separator bên trên |
+| **Footer dropdown** | Nút **"Tạo workspace mới"** (icon Plus + text, không có "+" thừa), có separator bên trên |
 | **Đóng dropdown** | Click ra ngoài hoặc chọn workspace |
-| **Switch action** | Cập nhật `currentWorkspaceId` (Zustand + localStorage) → reload toàn bộ data → set `x-workspace-id` header |
+| **Switch action** | Cập nhật `currentWorkspaceId` (Zustand + localStorage) → reload toàn bộ data → set `x-workspace-id` header → **navigate `/app/my-tasks`** của workspace mới → **toast success** `"Đã chuyển sang workspace \"[tên]\""` (bottom-right, duration 2.5s) |
 
 #### Role-aware Sidebar Visibility
 
@@ -369,9 +370,21 @@ Khi bấm vào Workspace Switcher, dropdown mở ra (float bên trên sidebar, k
 | Dự án | ✅ | ✅ | ✅ |
 | Báo cáo | ✅ | ✅ | ❌ Ẩn |
 | Cài đặt | ✅ | ❌ Ẩn | ❌ Ẩn |
+| Thành viên | ✅ | ❌ Ẩn | ❌ Ẩn |
 | Thùng rác | ✅ | ❌ Ẩn | ❌ Ẩn |
 
 > **Quy tắc:** Nav item không có quyền → **ẩn hoàn toàn** (không hiển thị disabled).
+
+#### Sidebar Layout — Quy tắc vị trí
+
+| Quy tắc | Chi tiết |
+|---------|----------|
+| **CSS layout** | `display: flex; flex-direction: column; height: 100%` — sidebar là flex column chiếm toàn bộ chiều cao |
+| **Nav items flow** | Tất cả nav items (chính + admin) flow tự nhiên từ trên xuống, **không** dùng `position: absolute` hay `margin-top: auto` |
+| **Separator** | `border-top: 1px solid var(--border)` đặt **ngay trên** Cài đặt — chỉ 1 dòng kẻ mỏng, không có padding lớn |
+| **Thứ tự nhóm dưới** | Cài đặt → Thành viên → Thùng rác (Admin only). Ba item này nằm **ngay sau** Báo cáo, chỉ cách 1 dòng kẻ |
+| **User info block** | Nằm ở **đáy sidebar**. Dùng `<div style="flex: 1" />` spacer giữa nav và user block để đẩy user block xuống |
+| **Không có khoảng trắng lớn** | Giữa Thùng rác và user block chỉ có flex spacer tự nhiên — không thêm margin/padding thừa |
 
 ### 3.3 Header
 

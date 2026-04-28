@@ -219,6 +219,20 @@ Then:
   - [ ] Bấm Đăng xuất → xóa token → redirect `/login` + toast "Đã đăng xuất."
 - [ ] **Auth Layout** (`/login`, `/register`): centered card `max-w-[400px]`, logo + tên app phía trên form
 - [ ] Mỗi trang `app/*` có `<h1>` riêng trong Main Content (không trong Header)
+- [ ] **[UI] Sidebar kiểm tra trực quan (theo design-system.md §3.2):**
+  - [ ] **Workspace Switcher** — 1 dòng duy nhất: icon + tên workspace (truncate) + chevron ▾
+  - [ ] Bấm workspace → dropdown **float** (không đẩy nav items xuống), `z-index: 50`
+  - [ ] Dropdown: danh sách workspaces + `RoleBadge`, active item có ✔ + highlight primary
+  - [ ] Chevron xoay lên (▴) khi mở, xoay xuống (▾) khi đóng
+  - [ ] Cuối dropdown có nút **"Tạo workspace mới"** (icon Plus, không có chữ "+" thừa, có separator phía trên)
+  - [ ] Click ra ngoài → dropdown đóng
+  - [ ] **Nút "+ Tạo task"** — chỉ hiện với Admin/Manager, ẩn với Member
+  - [ ] Nav chính (tất cả roles): **Công việc của tôi**, **Dự án**
+  - [ ] Nav chính (Admin/Manager): **Kanban Team**, **Báo cáo**
+  - [ ] Nav dưới — separator — (Admin only): **Cài đặt**, **Thành viên**, **Thùng rác**
+  - [ ] Nav item **Thành viên** nằm giữa Cài đặt và Thùng rác
+  - [ ] Active nav item: background highlight + text primary, icon filled
+  - [ ] Bottom user block: Avatar (initials) + tên user + role badge
 
 **Tests**
 - [ ] Tất cả API Tests pass (11/11 test cases)
@@ -237,6 +251,13 @@ Then:
 - [ ] Dev env chạy được locally (frontend + backend + DB)
 - [ ] Đăng ký → tạo workspace → đăng nhập → xem /app/my-tasks thành công
 - [ ] Tất cả edge cases đã handle và test pass
+- [ ] **[UI] Sidebar đủ thành phần (Admin role):**
+  - [ ] Workspace Switcher (1 dòng, bấm ra dropdown float)
+  - [ ] Nút "+ Tạo task" (primary, full-width)
+  - [ ] Công việc của tôi | Kanban Team | Dự án | Báo cáo
+  - [ ] Separator
+  - [ ] Cài đặt | **Thành viên** | Thùng rác
+  - [ ] Bottom: Avatar + tên user + role
 - [ ] Tự động mở trình duyệt kiểm tra UI các chức năng, đảm bảo không có lỗi cú pháp hay thiếu module
 
 ---
@@ -1944,17 +1965,17 @@ Then:
 
 | Kiểm tra | Target | Cách test | Status |
 |---|---|---|---|
-| LCP trang đầu tiên | < 2.5s trên 4G | Lighthouse audit | [x] |
-| API read endpoints (p95) | < 500ms | k6 load test | [x] |
-| API write endpoints (p95) | < 1s | k6 load test | [x] |
-| Search debounce | 300ms | E2E test timing | [x] |
+| LCP trang đầu tiên | < 2.5s trên 4G | Lighthouse audit | [ ] |
+| API read endpoints (p95) | < 500ms | k6 load test | [ ] |
+| API write endpoints (p95) | < 1s | k6 load test | [ ] |
+| Search debounce | 300ms | E2E test timing | [ ] |
 
 #### NFR-02: Availability
 
 | Kiểm tra | Target | Cách test | Status |
 |---|---|---|---|
 | Uptime SLA | ≥ 99.5% | Monitor 7 ngày staging | [ ] |
-| Health check endpoint | GET /health → 200 | Automated ping | [x] |
+| Health check endpoint | GET /health → 200 | Automated ping | [ ] |
 
 #### NFR-03: Security
 
@@ -1963,18 +1984,18 @@ Then:
 | bcrypt cost factor ≥ 12 | Kiểm tra DB hash prefix `$2b$12$` | [ ] |
 | HTTPS/TLS | Browser DevTools Network tab | [ ] |
 | JWT expiry 7 ngày | Decode token, check exp | [ ] |
-| XSS prevention (task title, comment) | Nhập `<script>alert(1)</script>` | [x] |
-| SQL injection (search, filters) | Nhập `'; DROP TABLE tasks;--` | [x] |
-| Rate limiting 100 req/min | Gửi 101 requests, expect 429 | [x] |
-| Row-level isolation | Login user A, access workspace B API | [x] |
-| Password không có trong API response | Inspect bất kỳ API response có user | [x] |
+| XSS prevention (task title, comment) | Nhập `<script>alert(1)</script>` | [ ] |
+| SQL injection (search, filters) | Nhập `'; DROP TABLE tasks;--` | [ ] |
+| Rate limiting 100 req/min | Gửi 101 requests, expect 429 | [ ] |
+| Row-level isolation | Login user A, access workspace B API | [ ] |
+| Password không có trong API response | Inspect bất kỳ API response có user | [ ] |
 
 #### NFR-04: Scalability
 
 | Kiểm tra | Target | Status |
 |---|---|---|
-| Database indexes trên FK và search fields | `EXPLAIN ANALYZE` query | [x] |
-| Stateless API (không session server-side) | API hoạt động với nhiều instance | [x] |
+| Database indexes trên FK và search fields | `EXPLAIN ANALYZE` query | [ ] |
+| Stateless API (không session server-side) | API hoạt động với nhiều instance | [ ] |
 
 #### NFR-05: Usability
 
@@ -1989,17 +2010,17 @@ Then:
 
 | Kiểm tra | Target | Status |
 |---|---|---|
-| WCAG 2.1 AA cho core components | Lighthouse Accessibility score ≥ 90 | [x] |
-| Form elements có label | Inspect DOM | [x] |
-| Keyboard navigation Kanban board | Tab + Enter để di chuyển | [x] |
+| WCAG 2.1 AA cho core components | Lighthouse Accessibility score ≥ 90 | [ ] |
+| Form elements có label | Inspect DOM | [ ] |
+| Keyboard navigation Kanban board | Tab + Enter để di chuyển | [ ] |
 
 #### NFR-07: Data Integrity
 
 | Kiểm tra | Target | Status |
 |---|---|---|
-| Soft delete (deleted_at) | Task xóa không mất trong DB | [x] |
-| Activity log không xóa được | API DELETE /activity trả 404/405 | [x] |
-| Restore task trong 30 ngày | Admin restore soft-deleted task | [x] |
+| Soft delete (deleted_at) | Task xóa không mất trong DB | [ ] |
+| Activity log không xóa được | API DELETE /activity trả 404/405 | [ ] |
+| Restore task trong 30 ngày | Admin restore soft-deleted task | [ ] |
 
 #### NFR-08: Browser Support
 
@@ -2018,30 +2039,30 @@ Then:
 
 | Edge Case | File xử lý | Test | Status |
 |---|---|---|---|
-| Assignee bị xóa → "[Removed User]" | task.service | API test | [x] |
-| Archive project + task cũ vẫn update được | project.service | E2E test | [x] |
-| 2 user edit cùng lúc → last-write-wins + log | task.service | API test (race condition) | [x] |
-| Due date quá khứ → badge "Overdue" ngay | task.service | Unit test + E2E | [x] |
-| Task title `<script>` → sanitize | task.service | API test | [x] |
-| Member tự xóa chính mình | member.service | API test (403) | [x] |
+| Assignee bị xóa → "[Removed User]" | task.service | API test | [ ] |
+| Archive project + task cũ vẫn update được | project.service | E2E test | [ ] |
+| 2 user edit cùng lúc → last-write-wins + log | task.service | API test (race condition) | [ ] |
+| Due date quá khứ → badge "Overdue" ngay | task.service | Unit test + E2E | [ ] |
+| Task title `<script>` → sanitize | task.service | API test | [ ] |
+| Member tự xóa chính mình | member.service | API test (403) | [ ] |
 
 #### 10.2 Authentication & Session
 
 | Edge Case | File xử lý | Test | Status |
 |---|---|---|---|
-| Token hết hạn → intercept 401 → redirect login | auth middleware | E2E test | [x] |
-| Sai password 5 lần → lock 15 phút + countdown | auth.service | API test | [x] |
-| 2 tab logout → storage event → tab còn lại redirect | auth store | E2E test (2 tabs) | [x] |
-| Email đã tồn tại khi register | auth.service | API test | [x] |
+| Token hết hạn → intercept 401 → redirect login | auth middleware | E2E test | [ ] |
+| Sai password 5 lần → lock 15 phút + countdown | auth.service | API test | [ ] |
+| 2 tab logout → storage event → tab còn lại redirect | auth store | E2E test (2 tabs) | [ ] |
+| Email đã tồn tại khi register | auth.service | API test | [ ] |
 
 #### 10.3 Network & Performance
 
 | Edge Case | File xử lý | Test | Status |
 |---|---|---|---|
-| API 500/timeout → toast "Thử lại?" + nút Retry | api client | E2E test (mock 500) | [x] |
-| Mất internet → banner "Bạn đang offline" | network detector | E2E test (offline mode) | [x] |
+| API 500/timeout → toast "Thử lại?" + nút Retry | api client | E2E test (mock 500) | [ ] |
+| Mất internet → banner "Bạn đang offline" | network detector | E2E test (offline mode) | [ ] |
 | Upload ảnh > 5MB → lỗi trước khi upload | file handler | Unit test | [ ] |
-| Empty response (lỗi quyền) → "Không có quyền truy cập" | API client | E2E test | [x] |
+| Empty response (lỗi quyền) → "Không có quyền truy cập" | API client | E2E test | [ ] |
 
 ---
 

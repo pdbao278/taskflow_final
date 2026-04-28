@@ -44,10 +44,8 @@ Tiến hành thực thi toàn bộ M0 (từ Setup, Backend, Frontend đến Test
 Khi hoàn thành, dùng browser tool kiểm tra giao diện và in ra checklist "M0 — FR-01 Definition of Done" (đánh dấu [x] các mục đã xong) để báo cáo. Bắt đầu thực hiện.
 
 LỆNH THỰC THI: MILESTONE M1
-Đọc kỹ file docs/task.md phần "Milestone M1 — Core CRUD". Chú ý quy tắc BẮT BUỘC thực hiện tuần tự: FR-02 -> FR-03 -> FR-04 -> FR-05.
-Tự động tham chiếu requirements.md và design-system.md tương ứng cho từng FR.
-Thực thi toàn bộ Backend, Frontend và Testing cho M1.
-Khi hoàn thành, dùng browser tool kiểm tra giao diện và in ra checklist "Acceptance Gate M1" (đánh dấu [x] các mục đã xong) để báo cáo. Bắt đầu thực hiện FR-02.
+Đọc kỹ file docs/task.md phần "Milestone M1 — Core CRUD",Nạp ngữ cảnh từ requirements.md và design-system.md . Hãy làm theo hướng dẫn cho AI Coding Agent (Bắt buộc). Thực thi toàn bộ Backend, Frontend và Testing cho mỗi FR, thứ tự không được thay đổi.Mỗi FR phải thực hiện đẩy đủ chi tiết trong task, không được bỏ sót hay thay đổi về công nghệ,UI/UX,.... theo yêu cầu trong task.md 
+Khi hoàn thành, dùng browser tool kiểm tra giao diện và in ra checklist từng FR và cuối M1 là "Acceptance Gate M1" (đánh dấu [x] các mục đã xong) để báo cáo. Bắt đầu thực hiện FR-02.
 
 LỆNH THỰC THI: MILESTONE M2
 Đọc kỹ file docs/task.md phần "Milestone M2 — Collaboration". Chú ý quy tắc BẮT BUỘC thực hiện tuần tự: FR-06 -> FR-09 -> FR-10.

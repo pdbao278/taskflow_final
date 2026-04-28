@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
-import { createTaskSchema, updateTaskSchema } from '../schemas/task.schema';
+import { createTaskSchema, updateTaskSchema, updateTaskStatusSchema } from '../schemas/task.schema';
 import { canCreateTask } from '../services/project.service';
 import {
   createActivityLog,
@@ -306,6 +306,87 @@ router.get('/:id', async (req: AuthRequest, res: Response): Promise<void> => {
     res.json({ success: true, data: { task: finalTask } });
   } catch (err) {
     console.error('Get task error:', err);
+    res.status(500).json({ success: false, error: 'Có lỗi xảy ra. Thử lại?' });
+  }
+});
+
+// ─── PATCH /api/tasks/:id/status — update task status (FR-05) ──────────────────
+router.patch('/:id/status', async (req: AuthRequest, res: Response): Promise<void> => {
+  const workspaceId = req.headers['x-workspace-id'] as string;
+  if (!workspaceId) {
+    res.status(400).json({ success: false, error: 'x-workspace-id header required' });
+    return;
+  }
+
+  const parse = updateTaskStatusSchema.safeParse(req.body);
+  if (!parse.success) {
+    res.status(400).json({ success: false, error: parse.error.errors[0]?.message });
+    return;
+  }
+
+  try {
+    const member = await getWorkspaceMember(workspaceId, req.user!.userId);
+    if (!member) {
+      res.status(403).json({ success: false, error: 'Forbidden' });
+      return;
+    }
+
+    const task = await prisma.task.findFirst({
+      where: { id: req.params.id, workspaceId, deletedAt: null },
+    });
+    if (!task) {
+      res.status(404).json({ success: false, error: 'Task không tồn tại.' });
+      return;
+    }
+
+    // FR-05 Permission: Only Assignee, Manager, Admin can change status
+    const isAssignee = task.assigneeId === req.user!.userId;
+    const isAdminOrManager = member.role === 'Admin' || member.role === 'Manager';
+
+    if (!isAssignee && !isAdminOrManager) {
+      res.status(403).json({ success: false, error: 'Chỉ assignee hoặc Manager mới có thể đổi trạng thái' });
+      return;
+    }
+
+    if (task.status === parse.data.status) {
+      const [finalTask] = await attachAssigneeStatus(workspaceId, [{ ...task, isOverdue: isOverdue(task.dueDate) }]);
+      res.json({ success: true, data: { task: finalTask } });
+      return;
+    }
+
+    const oldStatus = task.status;
+
+    const updated = await prisma.task.update({
+      where: { id: task.id },
+      data: { status: parse.data.status },
+      include: {
+        project: { select: { id: true, name: true, color: true, archivedAt: true } },
+        creator: { select: { id: true, name: true } },
+        assignee: { select: { id: true, name: true } },
+      },
+    });
+
+    // Activity log ghi "[Tên Member] changed status from To Do → In Progress at [timestamp]"
+    // The format is dictated by how activity logs are fetched, but we record the field change here
+    await createActivityLog({
+      taskId: task.id,
+      userId: req.user!.userId,
+      actionType: 'field_edited',
+      fieldChanged: 'status',
+      oldValue: oldStatus,
+      newValue: parse.data.status,
+    });
+
+    const taskResponse = {
+      ...updated,
+      isOverdue: isOverdue(updated.dueDate),
+    };
+
+    const [finalTask] = await attachAssigneeStatus(workspaceId, [taskResponse]);
+
+    res.json({ success: true, data: { task: finalTask } });
+  } catch (err) {
+    console.error('Update task status error:', err);
     res.status(500).json({ success: false, error: 'Có lỗi xảy ra. Thử lại?' });
   }
 });

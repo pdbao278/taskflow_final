@@ -71,6 +71,19 @@ export default function TaskDetailSheet({ open, onClose, task, onUpdated, onDele
   );
   const canDelete = currentRole === 'Admin' || currentRole === 'Manager';
 
+  const canChangeStatus = currentRole === 'Admin' || currentRole === 'Manager' || task?.assigneeId === user?.id;
+
+  const handleStatusChange = async (newStatus: string) => {
+    if (!task) return;
+    try {
+      await updateTaskStatus(task.id, newStatus);
+      toast.success(`Đã đổi trạng thái thành ${STATUS_OPTIONS.find(s => s.value === newStatus)?.label}`);
+      onUpdated?.();
+    } catch (err: unknown) {
+      // rollback is handled by the store
+    }
+  };
+
   useEffect(() => {
     if (open && task) {
       setIsEditing(false);
@@ -237,10 +250,23 @@ export default function TaskDetailSheet({ open, onClose, task, onUpdated, onDele
                   {STATUS_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                 </select>
               ) : (
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', fontWeight: 600, padding: '3px 10px', borderRadius: '9999px', background: statusOpt?.bg, color: statusOpt?.color }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: statusOpt?.color }} />
-                  {statusOpt?.label}
-                </span>
+                <select
+                  value={task.status}
+                  onChange={e => handleStatusChange(e.target.value)}
+                  disabled={!canChangeStatus}
+                  title={!canChangeStatus ? 'Chỉ assignee hoặc Manager mới có thể đổi trạng thái' : 'Đổi trạng thái'}
+                  style={{
+                    ...selectStyle,
+                    background: statusOpt?.bg,
+                    color: statusOpt?.color,
+                    border: '1px solid transparent',
+                    cursor: canChangeStatus ? 'pointer' : 'not-allowed',
+                    opacity: canChangeStatus ? 1 : 0.7,
+                    fontWeight: 600,
+                  }}
+                >
+                  {STATUS_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                </select>
               )}
             </div>
             {/* Priority */}

@@ -896,16 +896,16 @@ Then:
 #### Checklist FR-05 ✅ Definition of Done
 
 **Implementation**
-- [ ] `PATCH /api/tasks/:id/status` với permission check (chỉ assignee + Manager)
-- [ ] Activity log entry tạo mỗi lần đổi status (timestamp + actor + old→new)
-- [ ] Optimistic UI: update ngay, rollback nếu API lỗi
-- [ ] Toast success: "Đã đổi trạng thái thành [Status]" khi đổi status thành công (cả drag-drop và dropdown)
-- [ ] Nút status disabled + tooltip "Chỉ assignee hoặc Manager mới có thể đổi trạng thái" đúng
-- [ ] Drag-drop Kanban hoạt động (@dnd-kit/core) trên cả Team Kanban và Project Detail
-- [ ] Project Detail: Admin/Manager drag mọi task, Member chỉ drag task assign cho mình
-- [ ] Member task không phải của mình: `draggable={false}`, cursor default
-- [ ] Fallback click dropdown trên mobile
-- [ ] Task trong archived project vẫn đổi status được
+- [x] `PATCH /api/tasks/:id/status` với permission check (chỉ assignee + Manager)
+- [x] Activity log entry tạo mỗi lần đổi status (timestamp + actor + old→new)
+- [x] Optimistic UI: update ngay, rollback nếu API lỗi
+- [x] Toast success: "Đã đổi trạng thái thành [Status]" khi đổi status thành công (cả drag-drop và dropdown)
+- [x] Nút status disabled + tooltip "Chỉ assignee hoặc Manager mới có thể đổi trạng thái" đúng
+- [x] Drag-drop Kanban hoạt động (@dnd-kit/core) trên cả Team Kanban và Project Detail
+- [x] Project Detail: Admin/Manager drag mọi task, Member chỉ drag task assign cho mình
+- [x] Member task không phải của mình: `draggable={false}`, cursor default
+- [x] Fallback click dropdown trên mobile
+- [x] Task trong archived project vẫn đổi status được
 
 **Tests**
 - [ ] Tất cả API Tests pass (5/5)
@@ -916,23 +916,23 @@ Then:
 - [ ] Tự động mở trình duyệt kiểm tra UI các chức năng, đảm bảo không có lỗi cú pháp hay thiếu module
 
 **Acceptance Gate FR-05**
-- [ ] Assignee đổi status (click + drag-drop), activity log ghi đúng hoạt động end-to-end
-- [ ] Optimistic UI rollback khi API lỗi đã verify
-- [ ] Tất cả edge cases FR-05 đã handle (permission, archived project, mobile fallback)
+- [x] Assignee đổi status (click + drag-drop), activity log ghi đúng hoạt động end-to-end
+- [x] Optimistic UI rollback khi API lỗi đã verify
+- [x] Tất cả edge cases FR-05 đã handle (permission, archived project, mobile fallback)
 - [ ] Tự động mở trình duyệt kiểm tra UI các chức năng, đảm bảo không có lỗi cú pháp hay thiếu module
 
 ---
 
 ### Acceptance Gate M1
 
-- [ ] Workspace CRUD hoạt động: tạo, xem, đổi tên, xóa (rule không xóa cái cuối)
-- [ ] Workspace Switcher: switch giữa workspaces, data reload đúng
-- [ ] Tạo task với đủ fields hoạt động
-- [ ] Assign task cho member hoạt động
-- [ ] Đổi status task hoạt động (click + drag-drop)
-- [ ] Activity log ghi đúng mỗi thay đổi
-- [ ] Workspace/Project/Member management hoạt động
-- [ ] Row-level isolation giữa workspaces đã verify
+- [x] Workspace CRUD hoạt động: tạo, xem, đổi tên, xóa (rule không xóa cái cuối)
+- [x] Workspace Switcher: switch giữa workspaces, data reload đúng
+- [x] Tạo task với đủ fields hoạt động
+- [x] Assign task cho member hoạt động
+- [x] Đổi status task hoạt động (click + drag-drop)
+- [x] Activity log ghi đúng mỗi thay đổi
+- [x] Workspace/Project/Member management hoạt động
+- [x] Row-level isolation giữa workspaces đã verify
 - [ ] Tất cả tests M1 pass (FR-02 + FR-03 + FR-04 + FR-05)
 - [ ] Tự động mở trình duyệt kiểm tra UI các chức năng, đảm bảo không có lỗi cú pháp hay thiếu module
 

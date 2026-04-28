@@ -53,6 +53,7 @@ interface TaskState {
   loadTask: (taskId: string) => Promise<void>;
   createTask: (data: CreateTaskData) => Promise<Task | null>;
   updateTask: (taskId: string, data: UpdateTaskData) => Promise<Task | null>;
+  updateTaskStatus: (taskId: string, status: string) => Promise<boolean>;
   deleteTask: (taskId: string) => Promise<boolean>;
   loadTrash: (projectFilter?: string) => Promise<void>;
   restoreTask: (taskId: string) => Promise<boolean>;
@@ -144,6 +145,34 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
       }
       return task || null;
     } catch (err: unknown) {
+      const message = (err as any)?.response?.data?.error || 'Có lỗi xảy ra. Thử lại?';
+      throw new Error(message);
+    }
+  },
+
+  updateTaskStatus: async (taskId: string, status: string) => {
+    // Optimistic UI update
+    const previousTasks = get().tasks;
+    const previousCurrentTask = get().currentTask;
+    
+    set(state => ({
+      tasks: state.tasks.map(t => t.id === taskId ? { ...t, status } : t),
+      currentTask: state.currentTask?.id === taskId ? { ...state.currentTask, status } : state.currentTask,
+    }));
+
+    try {
+      const res = await apiClient.patch(`/tasks/${taskId}/status`, { status });
+      const task: Task = res.data?.data?.task;
+      if (task) {
+        set(state => ({
+          tasks: state.tasks.map(t => t.id === task.id ? task : t),
+          currentTask: state.currentTask?.id === task.id ? task : state.currentTask,
+        }));
+      }
+      return true;
+    } catch (err: unknown) {
+      // Rollback on error
+      set({ tasks: previousTasks, currentTask: previousCurrentTask });
       const message = (err as any)?.response?.data?.error || 'Có lỗi xảy ra. Thử lại?';
       throw new Error(message);
     }

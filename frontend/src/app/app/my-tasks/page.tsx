@@ -4,19 +4,12 @@ import { useEffect, useState } from 'react';
 import { ClipboardList, Loader2 } from 'lucide-react';
 import { useTaskStore, type Task } from '@/features/tasks/stores/task.store';
 import { useWorkspaceStore } from '@/features/workspace/stores/workspace.store';
-import TaskCard from '@/features/tasks/components/TaskCard';
 import TaskDetailSheet from '@/features/tasks/components/TaskDetailSheet';
 import CreateTaskSheet from '@/features/tasks/components/CreateTaskSheet';
-
-const STATUS_COLUMNS = [
-  { key: 'ToDo', label: 'To Do', color: 'var(--status-todo)' },
-  { key: 'InProgress', label: 'In Progress', color: 'var(--status-in-progress)' },
-  { key: 'InReview', label: 'In Review', color: 'var(--status-in-review)' },
-  { key: 'Done', label: 'Done', color: 'var(--status-done)' },
-] as const;
+import KanbanBoardView from '@/features/tasks/components/KanbanBoardView';
 
 export default function MyTasksPage() {
-  const { tasks, isLoading, loadMyTasks } = useTaskStore();
+  const { tasks, isLoading, loadMyTasks, updateTaskStatus } = useTaskStore();
   const { currentWorkspaceId } = useWorkspaceStore();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showDetail, setShowDetail] = useState(false);
@@ -69,41 +62,16 @@ export default function MyTasksPage() {
           </p>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', minHeight: '300px' }}>
-          {STATUS_COLUMNS.map((col) => {
-            const columnTasks = getTasksByStatus(col.key);
-            return (
-              <div key={col.key} style={{ background: 'var(--surface)', borderRadius: '8px', padding: '12px', minHeight: '200px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: col.color }} />
-                  <span style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>
-                    {col.label}
-                  </span>
-                  <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', background: 'var(--muted)', padding: '1px 6px', borderRadius: '9999px' }}>
-                    {columnTasks.length}
-                  </span>
-                </div>
-                {columnTasks.length === 0 ? (
-                  <p style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center', padding: '24px 0' }}>Chưa có task</p>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {columnTasks.map(task => (
-                      <TaskCard key={task.id} task={task} onClick={handleTaskClick} />
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+        <KanbanBoardView tasks={tasks} onTaskClick={handleTaskClick} onStatusChange={updateTaskStatus} />
       )}
 
+      {/* Task Detail Sheet */}
       <TaskDetailSheet
         open={showDetail}
         onClose={() => { setShowDetail(false); setSelectedTask(null); }}
         task={selectedTask}
-        onUpdated={() => loadMyTasks()}
-        onDeleted={() => loadMyTasks()}
+        onUpdated={loadMyTasks}
+        onDeleted={loadMyTasks}
       />
     </div>
   );

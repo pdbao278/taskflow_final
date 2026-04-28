@@ -237,7 +237,6 @@ Then:
 - [ ] Dev env chạy được locally (frontend + backend + DB)
 - [ ] Đăng ký → tạo workspace → đăng nhập → xem /app/my-tasks thành công
 - [ ] Tất cả edge cases đã handle và test pass
-- [ ] Git commit: `feat: M0 - project setup + auth (FR-01)`
 - [ ] Tự động mở trình duyệt kiểm tra UI các chức năng, đảm bảo không có lỗi cú pháp hay thiếu module
 
 ---
@@ -914,7 +913,6 @@ Then:
 - [ ] Workspace/Project/Member management hoạt động
 - [ ] Row-level isolation giữa workspaces đã verify
 - [ ] Tất cả tests M1 pass (FR-02 + FR-03 + FR-04 + FR-05)
-- [ ] Git commit: `feat: M1 - core CRUD (FR-02, FR-03, FR-04, FR-05)`
 - [ ] Tự động mở trình duyệt kiểm tra UI các chức năng, đảm bảo không có lỗi cú pháp hay thiếu module
 
 ---
@@ -1285,7 +1283,6 @@ Then:
 - [ ] Activity log ghi đầy đủ mọi thay đổi
 - [ ] Activity log không thể xóa
 - [ ] Tất cả tests M2 pass (FR-06 + FR-09 + FR-10)
-- [ ] Git commit: `feat: M2 - collaboration (FR-06, FR-09, FR-10)`
 - [ ] Tự động mở trình duyệt kiểm tra UI các chức năng, đảm bảo không có lỗi cú pháp hay thiếu module
 
 ---
@@ -2057,7 +2054,6 @@ Then:
 - [ ] Lighthouse Performance score ≥ 80
 - [ ] Lighthouse Accessibility score ≥ 90
 - [ ] Không có blocker Severity 1 hoặc 2 (PRD 3.3)
-- [ ] Git commit: `feat: M4 - polish & QA (FR-12, all NFRs, all edge cases)`
 - [ ] Tự động mở trình duyệt kiểm tra UI các chức năng, đảm bảo không có lỗi cú pháp hay thiếu module
 
 ---

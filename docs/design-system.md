@@ -1214,34 +1214,47 @@ Dùng ở 2 nơi:
 #### Project List (`/app/projects`)
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  Dự án                                  [+ Tạo dự án]  │
-├─────────────────────────────────────────────────────────┤
-│  ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ │
-│  │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│ │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│ │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│ │
-│  │ Website Redesign│ │ Mobile App    │ │ API Backend   │ │
-│  │ Redesign UI...  │ │ Build native..│ │ REST API...   │ │
-│  │ 5 / 12 tasks   │ │ 3 / 8 tasks  │ │ 0 / 0 tasks  │ │
-│  └───────────────┘ └───────────────┘ └───────────────┘ │
-│  ┌───────────────┐                                      │
-│  │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│                                      │
-│  │ Old Project    │                                      │
-│  │ [Archived]     │                                      │
-│  │ 10 / 10 tasks  │                                      │
-│  └───────────────┘                                      │
-└─────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│  Dự án                                                           │
+│  Tất cả dự án trong workspace [WS Name]                         │
+│                                                                  │
+│  2 dự án đang hoạt động  🔄                  [+ Tạo project]    │
+│                                                                  │
+│  ┌─────────────────────┐ ┌─────────────────────┐                │
+│  │ ● Website Redesign  │ │ ● Mobile App        │                │
+│  │   Redesign UI...    │ │   Build native...   │                │
+│  │   ✅ 5/12 tasks  42%│ │   ✅ 3/8 tasks  38% │                │
+│  │   ▓▓▓▓▓░░░░░░░░░░░ │ │   ▓▓▓░░░░░░░░░░░░░ │                │
+│  └─────────────────────┘ └─────────────────────┘                │
+│                                                                  │
+│  📦 ĐÃ ARCHIVE (2)                                              │
+│                                                                  │
+│  ┌─────────────────────┐ ┌─────────────────────┐                │
+│  │ ● Old Project  [AR] │ │ ● Legacy API   [AR] │                │
+│  │   10/10 tasks  100% │ │   0/1 tasks     0%  │                │
+│  │   ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ │ │   ░░░░░░░░░░░░░░░░ │                │
+│  └─────────────────────┘ └─────────────────────┘                │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
-- **Layout:** Grid cards (3 columns desktop, 2 tablet, 1 mobile)
-- **Mỗi project card:**
-  - Color bar trên cùng (hex color của project)
-  - Tên project (`heading-3`)
-  - Mô tả (truncated 2 dòng, `body`, `text-secondary`)
-  - Task count: "5 / 12 tasks" (done / total)
-  - `ArchivedBadge` nếu đã archive
-- **Nút "+ Tạo dự án":** Top-right, chỉ hiển thị cho Admin/Manager
+- **Page header:**
+  - Title: `Dự án` (`text-2xl font-bold`)
+  - Subtitle: `Tất cả dự án trong workspace [WS Name]` (`text-sm text-text-muted`). Tên workspace lấy từ store, hiển thị font-medium
+- **2 sections tách riêng:**
+  - **Section 1 — Đang hoạt động:** Header `"[N] dự án đang hoạt động"` (`text-sm text-text-muted`) + icon refresh (🔄) bên cạnh. Nút `"+ Tạo project"` (primary) bên phải cùng hàng, chỉ Admin/Manager
+  - **Section 2 — Đã archive:** Header `📦 ĐÃ ARCHIVE ([N])` (`text-xs font-semibold text-text-muted uppercase tracking-wider`). Chỉ hiện khi có ≥ 1 archived project
+- **Layout cards:** Grid (3 columns desktop, 2 tablet, 1 mobile). Card nhỏ gọn hơn
+- **Compact Project Card:**
+  - `bg-white rounded-xl border p-4 shadow-sm` (padding nhỏ hơn: 16px)
+  - **Hàng 1:** Color dot (12px circle, `background: project.color`) + tên project (`text-sm font-semibold`) + `ArchivedBadge` (nếu archived, chỉ trong section archive)
+  - **Hàng 2:** Mô tả (truncated 1 dòng `text-ellipsis`, `text-xs text-text-secondary word-break-all`). Chỉ hiện khi có description. Text dài không ngắt → `word-break: break-all` + `min-width: 0`
+  - **Hàng 3 — Progress inline:** Icon check (✅ `text-success`, 14px) + `"[done]/[total] tasks"` (`text-xs text-text-muted`) + percentage (`text-xs font-semibold`) căn phải
+  - **Hàng 4 — Progress bar:** `h-1.5 rounded-full bg-muted`, fill gradient xanh lá (success). Archived → fill `hsl(38 92% 50%)` (warning/vàng olive) để phân biệt
+- **Nút "+ Tạo project":** Primary button, chỉ hiển thị cho Admin/Manager. Nằm cùng hàng section header active
 - **Click card:** Navigate → `/app/projects/:id`
-- **Empty state:** Xem 4.16
+- **Empty state (toàn bộ):** Xem 4.16
+- **Empty active:** Hiện empty state "Chưa có dự án nào đang hoạt động. Tạo dự án đầu tiên!"
+- **Empty archived:** Ẩn section archived hoàn toàn
 
 #### Project Detail (`/app/projects/:id`)
 
@@ -1268,7 +1281,7 @@ Dùng ở 2 nơi:
 - **Breadcrumb:** `← Dự án / [Tên project]`. Link "Dự án" navigate về `/app/projects`. Tên project là text tĩnh
 - **Project Info Card:** `bg-white rounded-xl border p-6 shadow-sm`
   - **Hàng 1:** Color dot + tên project (`text-xl font-bold`) + `ArchivedBadge` (nếu archive). Bên phải: nút "✏ Chỉnh sửa" + nút "Archive"
-  - **Mô tả:** `text-sm text-text-secondary`, chỉ hiện khi có description
+  - **Mô tả:** `text-sm text-text-secondary word-break-word overflow-wrap-anywhere`, chỉ hiện khi có description. Clamp tối đa 3 dòng (`-webkit-line-clamp: 3`). Text dài không ngắt được (URL, chuỗi liền) → `word-break: break-word`
   - **Progress bar:** Icon check xanh + "[done] / [total] tasks hoàn thành" + thanh progress (`h-2 rounded-full bg-muted`, fill gradient xanh lá) + "[%]"
 - **Nút "✏ Chỉnh sửa":** Outlined button (`border-border hover:bg-surface-hover`). Chỉ Admin/Manager, ẩn khi archived. Click → `EditProjectDialog` (sửa tên, mô tả, màu. `PATCH /api/projects/:id`)
 - **Nút "Archive":** Outlined destructive (`border-destructive/30 text-destructive`). Chỉ Admin/Manager, ẩn khi archived. Click → Confirm Dialog

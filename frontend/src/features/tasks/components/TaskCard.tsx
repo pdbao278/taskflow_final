@@ -89,7 +89,7 @@ export default function TaskCard({ task, onClick, dragDisabled, variant = 'kanba
         {/* Row 2: Title & Badges */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
           {/* Title */}
-          <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1 }}>
+          <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-primary)', wordBreak: 'break-word', flex: 1 }}>
             {task.title}
           </span>
 
@@ -182,10 +182,6 @@ export default function TaskCard({ task, onClick, dragDisabled, variant = 'kanba
           color: 'var(--text-primary)',
           margin: '0 0 4px',
           lineHeight: 1.4,
-          overflow: 'hidden',
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical' as const,
           wordBreak: 'break-word',
         }}
       >

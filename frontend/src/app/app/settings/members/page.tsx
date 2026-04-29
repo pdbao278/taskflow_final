@@ -231,7 +231,7 @@ export default function MembersPage() {
   if (currentRole !== 'Admin') return null;
 
   return (
-    <div style={{ maxWidth: '800px' }}>
+    <div style={{ padding: '24px 32px' }}>
       {/* Page Title */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px' }}>
         <Users size={24} color="var(--primary)" />

@@ -308,7 +308,7 @@ Dùng cho: Tất cả route `/app/*`
 - Sidebar: `width: 256px` (expanded) / `64px` (collapsed) / hidden (mobile)
 - Header: `height: 56px`, sticky top, z-index: `z-sticky`
 - Main content: `flex-1`, padding `p-6`, scrollable
-- **Page content wrapper**: `w-full` — **KHÔNG dùng `max-w-*xl mx-auto`** ở outer wrapper. Content phải scale đầy đủ theo màn hình. Chỉ cho phép `max-w-*` ở element con cụ thể (ví dụ: `max-w-sm` cho đoạn text empty state, `max-w-2xl` cho form settings đơn lẻ).
+- **Page content wrapper (Đồng bộ Layout Kích thước)**: Sử dụng layout mở rộng tối đa (`w-full flex-1`), **KHÔNG dùng `max-w-*xl mx-auto`** ở outer wrapper. Tính đồng bộ layout này áp dụng BẮT BUỘC trên tất cả các trang nội bộ (**My Tasks, Reports, Settings, Members, Trash**) để đảm bảo sự nhất quán tuyệt đối về không gian hiển thị (ví dụ: `app/my-tasks` phải có kích thước khung chứa giống hệt `app/reports` và `app/settings`). Chỉ cho phép `max-w-*` ở element con cụ thể (ví dụ: `max-w-sm` cho đoạn text empty state, `max-w-2xl` cho form settings đơn lẻ).
 - Slide-over: overlay từ phải, `width: 480px` (desktop) / full-screen (mobile)
 
 ### 3.2 Sidebar
@@ -715,7 +715,7 @@ Có **2 variant** tùy context sử dụng:
 | Row | Nội dung | Style |
 |-----|----------|-------|
 | **Row 1 — Project** | Color dot (`w-2.5 h-2.5 rounded-full`, màu hex project) + Tên project (uppercase) | `text-[11px]`, `text-text-muted`, `uppercase`, `font-medium`, `tracking-wider` |
-| **Row 2 — Title** | Tiêu đề task | `text-base`, `font-semibold`, `text-text-primary`, `line-clamp-2`, `mb-2` |
+| **Row 2 — Title** | Tiêu đề task (nếu dài sẽ bị ẩn bớt kèm dấu `...` để không xuống dòng) | `text-base`, `font-semibold`, `text-text-primary`, `truncate`, `mb-2` |
 | **Row 3 — Badges** | StatusBadge + PriorityBadge + OverdueBadge (nếu quá hạn, cạnh nhau) | `flex items-center gap-2 flex-wrap`, `mb-3` |
 | **Row 4 — Assignee + Due date** | **Trái:** Avatar circle (28px, initials) + Tên assignee. Nếu null → avatar placeholder xám + "Chưa assign" (italic, `text-text-muted`). **Phải:** Icon 📅 (`Calendar`, `w-3.5 h-3.5`) + Due date (`dd/mm/yy`). Nếu null → chỉ hiện icon 📅 (không có text). Quá hạn → `text-destructive font-medium`, icon vẫn là 📅 | `flex items-center justify-between`, `text-sm`, `text-text-secondary` |
 
@@ -758,7 +758,7 @@ Mọi task card (cả 2 variant) phải hiển thị **đủ các thông tin sau
 | # | Thông tin | Bắt buộc | Ghi chú |
 |---|-----------|:--------:|---------|
 | 1 | **Tên project** | ✅ | Color dot + tên project uppercase. Caption style |
-| 2 | **Tiêu đề task** | ✅ | Kanban: `text-base font-semibold line-clamp-2`. List: `text-sm truncate` |
+| 2 | **Tiêu đề task (và mô tả nếu có)** | ✅ | Kanban & List: Sử dụng `truncate` để phần text quá dài bị ẩn bớt kèm `...`, tuyệt đối không xuống dòng làm vỡ chiều cao thẻ. |
 | 3 | **StatusBadge** | ✅ | Luôn hiện trên card. Badge pill với dot color |
 | 4 | **PriorityBadge** | ✅ | Luôn hiện trên card, cạnh StatusBadge. Màu theo mức |
 | 5 | **Người thực hiện** (Assignee) | Nếu có | Avatar circle (28px) + **tên đầy đủ** (không chỉ avatar). Nếu null → ẩn cả row |
@@ -1156,6 +1156,7 @@ Dùng ở 2 nơi:
 
 #### Workspace Settings (`/app/settings`)
 
+- **Layout:** Đồng bộ kích thước layout với các trang My Tasks, Reports, v.v. (sử dụng full-width `w-full flex-1`, không giới hạn `max-w`).
 - **Chỉ Admin thấy** nav item này
 - **Content:**
   - Section "Tên workspace": inline edit + button "Lưu"
@@ -1603,6 +1604,8 @@ Assignee                 Hạn hoàn thành
 
 #### Layout
 
+- **Container:** Đồng bộ kích thước layout với các trang Reports, Settings, v.v. (sử dụng full-width `w-full flex-1`, không giới hạn `max-w`).
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  Task của tôi                                                   │
@@ -1779,6 +1782,8 @@ Row 4: [Avatar] Name        Due Date   (space-between, text-sm)
 ### 7.11 FR-11: Reports (`/app/reports`)
 
 #### Layout
+
+- **Container:** Đồng bộ kích thước layout với các trang My Tasks, Settings, v.v. (sử dụng full-width `w-full flex-1`, không giới hạn `max-w`).
 
 ```
 ┌─────────────────────────────────────────────────────────┐

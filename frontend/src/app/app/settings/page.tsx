@@ -86,7 +86,7 @@ export default function SettingsPage() {
 
 
   return (
-    <div style={{ maxWidth: '640px' }}>
+    <div style={{ padding: '24px 32px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px' }}>
         <Settings size={24} color="var(--primary)" />
         <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>

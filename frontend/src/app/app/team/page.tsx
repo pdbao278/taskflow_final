@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useWorkspaceStore } from '@/features/workspace/stores/workspace.store';
 import TeamKanbanBoard from '@/features/tasks/components/TeamKanbanBoard';
 import TaskDetailSheet from '@/features/tasks/components/TaskDetailSheet';
+import CreateTaskSheet from '@/features/tasks/components/CreateTaskSheet';
 import type { Task } from '@/features/tasks/stores/task.store';
 import { Loader2 } from 'lucide-react';
 
@@ -12,6 +13,7 @@ function TeamPageContent() {
   const router = useRouter();
   const { currentRole, currentWorkspaceId } = useWorkspaceStore();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [showCreateSheet, setShowCreateSheet] = useState(false);
 
   // Check permissions: Member is not allowed here
   useEffect(() => {
@@ -48,10 +50,7 @@ function TeamPageContent() {
       <div style={{ flex: 1, minHeight: 0 }}>
         <TeamKanbanBoard 
           onTaskClick={setSelectedTask} 
-          onAddTaskClick={() => {
-            const evt = new CustomEvent('open-task-form');
-            window.dispatchEvent(evt);
-          }} 
+          onAddTaskClick={() => setShowCreateSheet(true)} 
         />
       </div>
 
@@ -65,6 +64,14 @@ function TeamPageContent() {
         }}
         onDeleted={() => {
           setSelectedTask(null);
+          window.dispatchEvent(new CustomEvent('refetch-team-tasks'));
+        }}
+      />
+
+      <CreateTaskSheet
+        open={showCreateSheet}
+        onClose={() => setShowCreateSheet(false)}
+        onCreated={() => {
           window.dispatchEvent(new CustomEvent('refetch-team-tasks'));
         }}
       />

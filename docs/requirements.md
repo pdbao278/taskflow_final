@@ -569,7 +569,7 @@ enum MemberRole {
 
 | Method | Endpoint | Auth | Success |
 |--------|----------|------|---------|
-| GET | `/api/tasks/:id/activity` | Yes | 200 list (sorted created_at asc) |
+| GET | `/api/tasks/:id/activity` | Yes | 200 list (sorted `created_at` desc — mới nhất trước) |
 
 > **Không có DELETE endpoint** — activity log không thể xóa.
 
@@ -805,7 +805,7 @@ enum MemberRole {
 
 ### 9.10 FR-10: Activity Log (P1)
 
-- Tab "Activity" trong task detail, sorted theo thời gian (mới nhất ở dưới)
+- Tab "Activity" trong task detail, sorted theo thời gian (`created_at DESC` — mới nhất ở trên)
 - Entry types: Created, Status changed (old→new), Field edited (field: old→new), Commented
 - Format: avatar + tên + hành động + timestamp
 - **Không cho xóa** — không có DELETE endpoint

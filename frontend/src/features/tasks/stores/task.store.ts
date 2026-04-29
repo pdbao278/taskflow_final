@@ -156,8 +156,8 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
     const previousCurrentTask = get().currentTask;
     
     set(state => ({
-      tasks: state.tasks.map(t => t.id === taskId ? { ...t, status } : t),
-      currentTask: state.currentTask?.id === taskId ? { ...state.currentTask, status } : state.currentTask,
+      tasks: state.tasks.map(t => t.id === taskId ? { ...t, status: status as Task['status'] } : t),
+      currentTask: state.currentTask?.id === taskId ? { ...state.currentTask, status: status as Task['status'] } : state.currentTask,
     }));
 
     try {

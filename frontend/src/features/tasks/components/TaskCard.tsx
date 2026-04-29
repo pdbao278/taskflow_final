@@ -6,6 +6,7 @@ import type { Task } from '../stores/task.store';
 interface TaskCardProps {
   task: Task;
   onClick?: (task: Task) => void;
+  dragDisabled?: boolean;
 }
 
 const PRIORITY_STYLES: Record<string, { bg: string; color: string; label: string }> = {
@@ -31,7 +32,7 @@ function formatDueDate(dateStr: string | null): string {
   return `${day}/${month}/${year}`;
 }
 
-export default function TaskCard({ task, onClick }: TaskCardProps) {
+export default function TaskCard({ task, onClick, dragDisabled }: TaskCardProps) {
   const priority = PRIORITY_STYLES[task.priority] ?? PRIORITY_STYLES.Medium;
   const status = STATUS_STYLES[task.status] ?? STATUS_STYLES.ToDo;
   const isOverdue = task.isOverdue && task.status !== 'Done';
@@ -47,7 +48,7 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
         borderLeft: `3px solid ${isOverdue ? 'var(--destructive)' : status.dot}`,
         borderRadius: '8px',
         padding: '16px',
-        cursor: 'pointer',
+        cursor: dragDisabled ? 'not-allowed' : 'pointer',
         transition: 'box-shadow 0.15s, transform 0.1s',
         display: 'flex',
         flexDirection: 'column',

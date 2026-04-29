@@ -9,7 +9,6 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/features/auth/stores/auth.store';
 import { useWorkspaceStore, MemberRole } from '@/features/workspace/stores/workspace.store';
-import { useProjectStore } from '@/features/projects/stores/project.store';
 import CreateTaskSheet from '@/features/tasks/components/CreateTaskSheet';
 import toast from 'react-hot-toast';
 
@@ -34,27 +33,22 @@ const BOTTOM_ITEMS: NavItem[] = [
 ];
 
 function getRoleBadgeStyle(role: MemberRole): React.CSSProperties {
-  const styles: Record<MemberRole, React.CSSProperties> = {
-    Admin: {
-      background: 'hsl(221 83% 53% / 0.12)',
-      color: 'hsl(221 83% 53%)',
-    },
-    Manager: {
-      background: 'hsl(38 92% 50% / 0.12)',
-      color: 'hsl(38 92% 40%)',
-    },
-    Member: {
-      background: 'hsl(142 71% 45% / 0.12)',
-      color: 'hsl(142 71% 35%)',
-    },
+  const colors: Record<MemberRole, { color: string; border: string }> = {
+    Admin:   { color: 'hsl(221 83% 53%)', border: 'hsl(221 83% 53% / 0.5)' },
+    Manager: { color: 'hsl(38 92% 40%)',  border: 'hsl(38 92% 50% / 0.5)' },
+    Member:  { color: 'hsl(142 71% 35%)', border: 'hsl(142 71% 45% / 0.5)' },
   };
+  const { color, border } = colors[role];
   return {
-    ...styles[role],
+    color,
+    border: `1px solid ${border}`,
+    background: 'transparent',
     fontSize: '10px',
     fontWeight: 600,
     padding: '1px 6px',
     borderRadius: '4px',
     flexShrink: 0,
+    lineHeight: '16px',
   };
 }
 
@@ -63,7 +57,6 @@ export default function AppSidebar() {
   const router = useRouter();
   const { user } = useAuthStore();
   const { workspaces, currentWorkspaceId, currentRole, setCurrentWorkspace, loadWorkspaces } = useWorkspaceStore();
-  const { loadProjects } = useProjectStore();
   const [wsDropdownOpen, setWsDropdownOpen] = useState(false);
   const [showCreateTask, setShowCreateTask] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -71,8 +64,7 @@ export default function AppSidebar() {
   // Load workspaces on mount
   useEffect(() => {
     loadWorkspaces();
-    loadProjects();
-  }, [loadWorkspaces, loadProjects]);
+  }, [loadWorkspaces]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -125,6 +117,11 @@ export default function AppSidebar() {
           }}>
             {currentWs?.name ?? 'Chọn workspace...'}
           </span>
+          {currentWs && (
+            <span style={getRoleBadgeStyle(userRole)}>
+              {userRole}
+            </span>
+          )}
           <ChevronDown size={14} color="var(--text-muted)" style={{
             transform: wsDropdownOpen ? 'rotate(180deg)' : 'rotate(0)',
             transition: 'transform 0.2s',
@@ -174,7 +171,7 @@ export default function AppSidebar() {
                       {ws.name}
                     </span>
                     <span style={getRoleBadgeStyle(ws.role as MemberRole)}>
-                      {ws.role === 'Admin' ? 'Admin' : ws.role === 'Manager' ? 'Quản lý' : 'TV'}
+                      {ws.role as string}
                     </span>
                   </button>
                 );
@@ -293,7 +290,7 @@ export default function AppSidebar() {
               {user?.name}
             </p>
             <p style={{ fontSize: '11px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {userRole === 'Admin' ? 'Admin' : userRole === 'Manager' ? 'Quản lý' : 'Thành viên'}
+              {userRole}
             </p>
           </div>
         </div>
@@ -303,7 +300,7 @@ export default function AppSidebar() {
       <CreateTaskSheet
         open={showCreateTask}
         onClose={() => setShowCreateTask(false)}
-        onCreated={() => loadProjects()}
+        onCreated={() => {}} // ProjectsPage will auto-refresh via its own useEffect
       />
     </aside>
   );

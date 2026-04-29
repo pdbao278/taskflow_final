@@ -41,16 +41,21 @@ function SortableTaskCard({ task, onTaskClick, disabled }: { task: Task; onTaskC
     disabled,
   });
 
-  const style = {
+  const dragStyle = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.4 : 1,
-    cursor: disabled ? 'default' : (isDragging ? 'grabbing' : 'grab'),
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners} title={disabled ? 'Chỉ assignee hoặc Manager mới có thể đổi trạng thái' : undefined}>
-      <TaskCard task={task} onClick={onTaskClick} />
+    <div
+      ref={setNodeRef}
+      style={dragStyle}
+      {...attributes}
+      {...(disabled ? {} : listeners)}
+      title={disabled ? 'Chỉ assignee hoặc Manager mới có thể đổi trạng thái' : undefined}
+    >
+      <TaskCard task={task} onClick={onTaskClick} dragDisabled={disabled} />
     </div>
   );
 }

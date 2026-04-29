@@ -2,9 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Zap, Bell, LogOut, Search, ChevronDown } from 'lucide-react';
+import { Zap, LogOut, Search, ChevronDown } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuthStore, authApi } from '@/features/auth/stores/auth.store';
+import NotificationBell from '@/features/notifications/components/NotificationBell';
 import Link from 'next/link';
 
 function getInitials(name: string): string {
@@ -88,16 +89,7 @@ export default function AppHeader() {
 
       {/* Right: Bell + Avatar + Name */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
-        {/* Notification Bell */}
-        <button style={{
-          width: '36px', height: '36px', borderRadius: '8px',
-          border: '1px solid var(--border)', background: 'white',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'pointer', color: 'var(--text-secondary)',
-          position: 'relative',
-        }}>
-          <Bell size={18} />
-        </button>
+        <NotificationBell />
 
         {/* User Dropdown */}
         <div ref={dropdownRef} style={{ position: 'relative' }}>

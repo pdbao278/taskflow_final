@@ -1,14 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { ClipboardList, Loader2 } from 'lucide-react';
 import { useTaskStore, type Task } from '@/features/tasks/stores/task.store';
 import { useWorkspaceStore } from '@/features/workspace/stores/workspace.store';
 import TaskDetailSheet from '@/features/tasks/components/TaskDetailSheet';
 import CreateTaskSheet from '@/features/tasks/components/CreateTaskSheet';
 import KanbanBoardView from '@/features/tasks/components/KanbanBoardView';
+import apiClient from '@/lib/api-client';
 
-export default function MyTasksPage() {
+// Inner component that uses useSearchParams (must be wrapped in Suspense)
+function MyTasksContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const { tasks, isLoading, loadMyTasks, updateTaskStatus } = useTaskStore();
   const { currentWorkspaceId } = useWorkspaceStore();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -20,12 +25,36 @@ export default function MyTasksPage() {
     }
   }, [currentWorkspaceId, loadMyTasks]);
 
+  // Handle taskId query param from notification click
+  useEffect(() => {
+    const taskId = searchParams.get('taskId');
+    if (!taskId || !currentWorkspaceId) return;
+
+    // Load task detail and open sheet
+    apiClient
+      .get(`/tasks/${taskId}`)
+      .then((res) => {
+        const task = res.data?.data?.task;
+        if (task) {
+          setSelectedTask(task);
+          setShowDetail(true);
+          // Clean up URL without reload
+          const url = new URL(window.location.href);
+          url.searchParams.delete('taskId');
+          router.replace(url.pathname + (url.search ? url.search : ''));
+        }
+      })
+      .catch(() => {
+        // Task not found or access denied — silently ignore
+      });
+  // Only run when taskId changes and tasks are available
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, currentWorkspaceId]);
+
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task);
     setShowDetail(true);
   };
-
-  const getTasksByStatus = (status: string) => tasks.filter(t => t.status === status);
 
   if (isLoading && tasks.length === 0) {
     return (
@@ -74,5 +103,18 @@ export default function MyTasksPage() {
         onDeleted={loadMyTasks}
       />
     </div>
+  );
+}
+
+// Page wrapper with Suspense boundary (required for useSearchParams in Next.js)
+export default function MyTasksPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '80px' }}>
+        <Loader2 size={28} className="animate-spin" color="var(--primary)" />
+      </div>
+    }>
+      <MyTasksContent />
+    </Suspense>
   );
 }

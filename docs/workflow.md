@@ -86,4 +86,8 @@ In ra checklist "Acceptance Gate M5" (đánh dấu [x] các mục đã xong) và
 - **Kỳ vọng:** Đọc `docs/requirements.md` mục [vd: 9.4]. Khi restore mà assignee đã rời workspace thì phải set `assignee_id = null`.
 - **Yêu cầu:** Tìm nguyên nhân và fix logic. Chỉ đưa ra đoạn code cần thay thế.
 
----------Chỉnh sửa UI
+---------Chỉnh sửa,thay đổi UI
+
+Ở file task.ts phần FR-xx, tôi muốn thay đổi như sau:
+-Tôi muốn thay đổi vị trí nút từ "+New Task" trong phần Column Status: Đang thực hiện xuống dưới cùng của cột
+

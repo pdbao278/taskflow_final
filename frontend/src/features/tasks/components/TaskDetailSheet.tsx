@@ -10,6 +10,7 @@ import { useWorkspaceStore } from '@/features/workspace/stores/workspace.store';
 import { useAuthStore } from '@/features/auth/stores/auth.store';
 import apiClient from '@/lib/api-client';
 import { CommentThread } from '@/features/comments/components/CommentThread';
+import ActivityTab from './ActivityTab';
 
 interface TaskDetailSheetProps {
   open: boolean;
@@ -61,7 +62,6 @@ export default function TaskDetailSheet({ open, onClose, task, onUpdated, onDele
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [members, setMembers] = useState<Member[]>([]);
   const [activeTab, setActiveTab] = useState<'activity' | 'comments'>('comments');
-  const [activities, setActivities] = useState<any[]>([]);
   const [showAssigneeDropdown, setShowAssigneeDropdown] = useState(false);
   const [memberSearch, setMemberSearch] = useState('');
   const assigneeRef = useRef<HTMLDivElement>(null);
@@ -96,7 +96,6 @@ export default function TaskDetailSheet({ open, onClose, task, onUpdated, onDele
       setEditDueDate(task.dueDate ? task.dueDate.split('T')[0] : '');
       setShowDeleteConfirm(false);
       loadMembers();
-      loadActivity(task.id);
       setShowAssigneeDropdown(false);
       setMemberSearch('');
     }
@@ -118,13 +117,6 @@ export default function TaskDetailSheet({ open, onClose, task, onUpdated, onDele
       const res = await apiClient.get('/workspaces/members');
       setMembers(res.data?.data?.members ?? []);
     } catch { setMembers([]); }
-  };
-
-  const loadActivity = async (taskId: string) => {
-    try {
-      const res = await apiClient.get(`/tasks/${taskId}/activity`);
-      setActivities(res.data?.data?.activities ?? []);
-    } catch { setActivities([]); }
   };
 
   const handleSave = async () => {
@@ -408,17 +400,7 @@ export default function TaskDetailSheet({ open, onClose, task, onUpdated, onDele
               ))}
             </div>
             {activeTab === 'activity' ? (
-              activities.length > 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {activities.map((a: any, i: number) => (
-                    <div key={i} style={{ fontSize: '12px', color: 'var(--text-secondary)', padding: '8px 10px', background: 'var(--surface)', borderRadius: '6px' }}>
-                      <strong>{a.user?.name}</strong> {a.actionType === 'created' ? 'đã tạo task' : a.actionType === 'field_edited' ? `đã sửa ${a.fieldChanged}` : a.actionType === 'deleted' ? 'đã xóa task' : a.actionType === 'restored' ? 'đã khôi phục task' : a.actionType}
-                      {a.fieldChanged && <span style={{ color: 'var(--text-muted)' }}> ({a.oldValue} → {a.newValue})</span>}
-                      <span style={{ float: 'right', color: 'var(--text-muted)' }}>{formatDate(a.createdAt)}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : <p style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center', padding: '16px' }}>Chưa có hoạt động</p>
+              <ActivityTab taskId={task.id} />
             ) : (
               <div style={{ padding: '8px 0' }}>
                 <CommentThread taskId={task.id} />

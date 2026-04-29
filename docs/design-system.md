@@ -292,14 +292,22 @@ Dùng cho: Tất cả route `/app/*`
 ```
 ┌──────────┬──────────────────────────────────────────────┐
 │          │  Header                                       │
-│          │  [Page Title]        [Search] [🔔 3] [Avatar] │
-│          ├──────────────────────────────────────────────┤
-│ Sidebar  │                                               │
-│          │  Main Content Area                            │
-│ [WS]     │                                               │
-│ [Nav]    │  ┌─────────────────┐  ┌────────────────────┐  │
-│ [Items]  │  │  Content         │  │  Slide-over Panel │  │
-│          │  │  (page content)  │  │  (task detail)     │  │
+│          �```
+┌──────────────────────────────────┐
+│ [] Tên workspace  [Admin] ▾      │  ← 1 dòng: icon + tên + RoleBadge + chevron
+├──────────────────────────────────┤
+│ [+ Tạo task]                     │  ← Nút primary (Admin, Manager)
+├──────────────────────────────────┤
+│ 📋 Công việc của tôi             │  ← /app/my-tasks     (All roles)
+│ 👥 Kanban Team                   │  ← /app/team         (Admin, Manager)
+│ 📁 Dự án                        │  ← /app/projects     (All roles)
+│ 📊 Báo cáo                      │  ← /app/reports      (Admin, Manager)
+├──────────────────────────────────┤
+│ ⚙️ Cài đặt                       │  ← /app/settings          (Admin only)
+│ 👥 Thành viên                    │  ← /app/settings/members  (Admin only)
+│ 🗑️ Thùng rác                     │  ← /app/trash             (Admin only)
+└──────────────────────────────────┘
+```��  │  (task detail)     │  │
 │          │  │                  │  │  width: 480px      │  │
 │          │  └─────────────────┘  └────────────────────┘  │
 │          │                                               │
@@ -318,7 +326,7 @@ Dùng cho: Tất cả route `/app/*`
 
 ```
 ┌──────────────────────┐
-│ [] Tên workspace ▾    │  ← Chỉ hiện 1 dòng, bấm mở dropdown
+│ [] Tên workspace  [Admin] ▾  │  ← icon + tên + RoleBadge + chevron
 ├──────────────────────┤
 │ [+ Tạo task]         │  ← Nút primary (Admin, Manager)
 ├──────────────────────┤
@@ -337,7 +345,7 @@ Khi bấm vào Workspace Switcher, dropdown mở ra (float bên trên sidebar, k
 
 ```
 ┌──────────────────────┐
-│ [] Tên workspace ▴    │  ← Chevron đổi hướng (lên)
+│ [] Tên workspace  [Admin] ▴  │  ← Chevron đổi hướng (lên)
 └──────────────────────┘
 ┌──────────────────────┐  ┌────────────────────────────┐
 │                      │  │ ✔ Tên workspace   [Admin] │  ← Active (check + highlight)
@@ -351,12 +359,12 @@ Khi bấm vào Workspace Switcher, dropdown mở ra (float bên trên sidebar, k
 
 | Thành phần | Mô tả |
 |------------|--------|
-| **Trigger (collapsed)** | **1 dòng duy nhất** hiển thị trong sidebar: icon workspace (square grid `16px`) + **tên workspace đang active** (truncate, `font-medium`) + chevron-down. **Không hiện danh sách cho đến khi bấm.** |
+| **Trigger (collapsed)** | **1 dòng duy nhất**: icon workspace (square grid `16px`) + **tên workspace đang active** (truncate, `font-medium`) + **`RoleBadge` của user trong workspace đó** (outlined, English: Admin/Manager/Member) + chevron-down. **Không hiện danh sách cho đến khi bấm.** |
 | **Dropdown (expanded)** | Panel float bên ngoài sidebar (không đẩy nav items xuống), `min-w-[220px]`, `shadow-md`, `rounded-lg`, `z-dropdown` (50). Mở ngay bên dưới trigger |
-| **Mỗi item** | Tên workspace (truncate) + `RoleBadge` (Admin/Manager/Member) |
+| **Mỗi item** | Tên workspace (truncate) + `RoleBadge` (Admin/Manager/Member, outlined) |
 | **Active item** | Check icon ✔ bên trái + background `--primary/10` + text `--primary` |
 | **Chevron** | Quay lên (`▴`) khi mở, quay xuống (`▾`) khi đóng. Transition `duration-normal` |
-| **Footer dropdown** | Nút **"Tạo workspace mới"** (icon Plus + text, không có "+" thừa), có separator bên trên |
+| **Footer dropdown** | Nút **"Tạo workspace mới"** (icon Plus + text), có separator bên trên |
 | **Đóng dropdown** | Click ra ngoài hoặc chọn workspace |
 | **Switch action** | Cập nhật `currentWorkspaceId` (Zustand + localStorage) → reload toàn bộ data → set `x-workspace-id` header → **navigate `/app/my-tasks`** của workspace mới → **toast success** `"Đã chuyển sang workspace \"[tên]\""` (bottom-right, duration 2.5s) |
 
@@ -532,7 +540,7 @@ Khi bấm vào Workspace Switcher, dropdown mở ra (float bên trên sidebar, k
 |---------|----------|-------|
 | `StatusBadge` | Status task (ToDo, InProgress, InReview, Done) | Dot + text, màu theo status color |
 | `PriorityBadge` | Priority task (Low, Medium, High, Urgent) | Filled/outlined, màu theo priority color |
-| `RoleBadge` | Role member (Admin, Manager, Member) | Outlined, text nhỏ |
+| `RoleBadge` | Role member (Admin, Manager, Member) | **Outlined** — `border: 1px solid <role-color/50>`, background transparent, text `<role-color>`, `font-size: 10px`, `font-weight: 600`, `padding: 1px 6px`, `border-radius: 4px`. Label dùng tên tiếng Anh: **Admin / Manager / Member** |
 | `OverdueBadge` | Task quá hạn | Background `destructive-bg`, text `destructive`, icon clock |
 | `ArchivedBadge` | Project đã archive | Background `muted`, text `muted-foreground`, icon archive |
 | `PendingBadge` | Invite chưa accept | Background `warning-bg`, text `warning`, "Pending" |
@@ -1582,7 +1590,7 @@ Assignee                 Hạn hoàn thành
 #### Activity Tab (trong TaskDetailSheet)
 
 - **Vị trí:** Tab "Activity" trong task detail
-- **Sort:** `created_at` ascending — cũ nhất ở trên, mới nhất ở dưới (timeline style)
+- **Sort:** `created_at` descending — mới nhất ở trên, cũ nhất ở dưới (reverse-chronological)
 - **Mỗi entry:** Avatar (xs) + Tên + Hành động + Timestamp
 - **Entry types:**
 
@@ -1599,6 +1607,8 @@ Assignee                 Hạn hoàn thành
 - **Null value placeholders:**
   - assignee = null → hiển thị `(chưa assign)`
   - due_date = null → hiển thị `(không có)`
+- **Deleted entry style:** Text màu `--destructive` (đỏ nhạt), icon 🗑️ — phân biệt rõ với các entry khác
+- **Restored entry style:** Text màu `--success` (xanh lá nhạt), icon ↩️ — phân biệt rõ
 - **Không thể xóa:** Không có nút delete, không có endpoint DELETE
 - **Empty state:** "Chưa có hoạt động nào"
 

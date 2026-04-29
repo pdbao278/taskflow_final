@@ -21,8 +21,9 @@
 > 8. **API response format chuẩn:** `{ success: boolean, data?: T, error?: string }`
 > 9. **Bắt buộc đọc design-system trước khi code UI:** Trước khi implement UI của BẤT KỲ FR nào, AI PHẢI đọc section `design-system.md §7.X` tương ứng. Sai layout, sai component variant, sai wording → coi như CHƯA XONG. Mapping FR → Design Section:
 >    - FR-01 → §7.1 | FR-02 → §7.2 | FR-03 → §7.3 | FR-04 → §7.4 | FR-05 → §7.5
->    - FR-06 → §7.6 | FR-07 → §7.8 | FR-08 → §7.9 | FR-09 → §7.10 | FR-10 → §7.10
+>    - FR-06 → §7.6 | FR-07 → §7.9 | FR-08 → §7.10 | FR-09 → §7.7 | FR-10 → §7.8
 >    - FR-11 → §7.11 | FR-12 → §7.12 | FR-13 → §7.13
+> 10. **Tuyệt đối không bịa đặt thông tin:** Không được bịa hoặc suy đoán bất kỳ thông tin nào không có trong codebase, tài liệu (`requirements.md`, `design-system.md`, `task.md`) hoặc kết quả thực tế từ công cụ. Nếu không chắc → đọc lại file, chạy lệnh kiểm tra, hoặc hỏi người dùng. **Tuyệt đối không hallucinate API, field, component, hay trạng thái nào chưa được xác nhận.**
 
 ---
 
@@ -1072,9 +1073,9 @@ Then:
 **Mô tả từ PRD:** Notification khi: được assign task mới, task bị comment (trừ self), task đến hạn trong 24h, được @mention. Hiển thị badge counter và dropdown list. Đánh dấu đã đọc khi click.
 
 > [!IMPORTANT]
-> **Đọc trước khi implement UI — `design-system.md §7.10`**
+> **Đọc trước khi implement UI — `design-system.md §7.7`**
 > NotificationBell (badge "99+"), NotificationDropdown (width 380px, scroll >5 items), read/unread styles, polling 5s, mark-all-read button, click → navigate to task.
-> AI KHÔNG được tự suy ra UI — mọi chi tiết đã định nghĩa sẵn trong §7.10.
+> AI KHÔNG được tự suy ra UI — mọi chi tiết đã định nghĩa sẵn trong §7.7.
 
 #### NFR áp dụng cho FR-09
 
@@ -1197,9 +1198,9 @@ Then:
 **Mô tả từ PRD:** Mỗi task có tab "Activity" hiển thị toàn bộ lịch sử thay đổi: ai tạo, ai chỉnh sửa trường nào (giá trị cũ → giá trị mới), ai đổi status, ai comment. Không cho xóa activity log.
 
 > [!IMPORTANT]
-> **Đọc trước khi implement UI — `design-system.md §7.10`**
-> Activity tab trong TaskDetailSheet, entry format (avatar + tên + action + timestamp), sort cũ→mới (ascending), không có nút xóa.
-> AI KHÔNG được tự suy ra UI — mọi chi tiết đã định nghĩa sẵn trong §7.10.
+> **Đọc trước khi implement UI — `design-system.md §7.8`**
+> Activity tab trong TaskDetailSheet, entry format (avatar + tên + action + timestamp), sort mới→cũ (descending — mới nhất ở trên), không có nút xóa.
+> AI KHÔNG được tự suy ra UI — mọi chi tiết đã định nghĩa sẵn trong §7.8.
 
 #### User Stories & Acceptance Criteria (FR-10)
 
@@ -1209,7 +1210,7 @@ Then:
 Given: User vào task detail > tab "Activity"
 When: Tab load
 Then:
-  - Hiển thị toàn bộ lịch sử theo thứ tự thời gian (mới nhất ở dưới)
+  - Hiển thị toàn bộ lịch sử theo thứ tự thời gian (mới nhất ở trên)
   - Mỗi entry có: avatar + tên người thực hiện + hành động + timestamp
   - Các loại entry: Created, Status changed (old→new), Field edited (field: old→new), Commented
 
@@ -1235,7 +1236,7 @@ Then:
 
 | Test Case | Input | Expected |
 |---|---|---|
-| GET /api/tasks/:id/activity | task id | 200, list entries sorted by created_at |
+| GET /api/tasks/:id/activity | task id | 200, list entries sorted by created_at DESC (mới nhất trước) |
 | Verify entry khi tạo task | POST /api/tasks | activity entry "Created by..." tồn tại |
 | Verify entry khi đổi status | PATCH /api/tasks/:id/status | entry "Status: ToDo → InProgress" tồn tại |
 | Verify entry khi edit field | PATCH /api/tasks/:id | entry "title: old → new" tồn tại |
@@ -1263,9 +1264,9 @@ Then:
 #### Checklist FR-10 ✅ Definition of Done
 
 **Implementation**
-- [ ] `GET /api/tasks/:id/activity` trả list sorted by created_at
+- [ ] `GET /api/tasks/:id/activity` trả list sorted by `created_at DESC` (hoạt động mới nhất ở trên)
 - [ ] Không có endpoint DELETE cho activity log (NFR-07 — không thể xóa)
-- [ ] Activity entry tạo tự động khi: task created, status changed, field edited, comment added
+- [ ] Activity entry tạo tự động khi: task created, status changed, field edited, comment added, **task deleted, task restored**
 - [ ] Entry format đúng: actor + action + old_value → new_value + timestamp
 - [ ] Không tạo entry khi edit no-op (giá trị không đổi)
 - [ ] Tab "Activity" trong task detail UI hiển thị đúng
@@ -1281,7 +1282,7 @@ Then:
 - [ ] Tự động mở trình duyệt kiểm tra UI các chức năng, đảm bảo không có lỗi cú pháp hay thiếu module
 
 **Acceptance Gate FR-10**
-- [ ] Tạo task → đổi status → edit title → comment → Activity tab hiển thị đủ 4 loại entry đúng
+- [ ] Tạo task → đổi status → edit title → comment → xóa → khôi phục → Activity tab hiển thị đủ 6 loại entry đúng (created, status_changed, field_edited, commented, deleted, restored)
 - [ ] DELETE /api/tasks/:id/activity trả 404/405 đã verify
 - [ ] Tất cả edge cases FR-10 đã handle (no-op edit, soft-deleted task, 0 activity)
 - [ ] Tự động mở trình duyệt kiểm tra UI các chức năng, đảm bảo không có lỗi cú pháp hay thiếu module

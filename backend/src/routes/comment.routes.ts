@@ -116,7 +116,7 @@ router.post('/', async (req: AuthRequest, res: Response): Promise<void> => {
       workspaceId,
       content,
       req.user!.userId,
-      req.user!.name || comment.user.name,
+      comment.user.name,
       task.title,
       task.assigneeId
     );

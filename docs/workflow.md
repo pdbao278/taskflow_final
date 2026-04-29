@@ -51,6 +51,7 @@ Tài liệu này tổng hợp các mẫu câu lệnh (prompts) chuẩn để tư
   > Lệnh thực thi: Milestone [Tên Milestone, vd: M0]
   > - **Luôn ghi nhớ "Hướng dẫn dành cho AI coding" trong file `task.md`. Bắt buộc nạp 2 file ngữ cảnh: `requirements.md` và `design-system.md` trước khi code.**
   > - Đọc kỹ phần "Milestone [Tên Milestone]" trong `task.md`.
+  > - **Tuyệt đối không được bịa (hallucinate) code hay logic. Phải bám sát ngữ cảnh và yêu cầu từ các file tài liệu đã cung cấp.**
   > - Bám sát và thực hiện tuần tự các FR (Feature Request) hoặc checklist có trong Milestone đó. Mỗi FR phải lên kế hoạch chi tiết bao gồm plan test (API/Unit/E2E). Không làm gộp, không bỏ sót.
   > - Tiến hành thực thi toàn bộ (Backend, Frontend, Testing).
   > - Khi hoàn thành, dùng browser tool kiểm tra giao diện và in ra checklist "Acceptance Gate [Tên Milestone]" (đánh dấu `[x]` các mục đã xong) để báo cáo. 
@@ -61,6 +62,7 @@ Tài liệu này tổng hợp các mẫu câu lệnh (prompts) chuẩn để tư
   Lệnh thực thi: Milestone M1
   - Luôn ghi nhớ "Hướng dẫn dành cho AI coding" trong file task.md. Bắt buộc nạp 2 file ngữ cảnh...
   - Đọc kỹ phần "Milestone M1" trong task.md.
+  - Tuyệt đối không được bịa, phải bám sát ngữ cảnh tài liệu.
   - Bám sát và thực hiện tuần tự các FR...
   - Tiến hành thực thi toàn bộ (Backend, Frontend, Testing).
   - Khi hoàn thành, in ra checklist "Acceptance Gate M1" (đánh dấu [x]) để báo cáo.
@@ -73,6 +75,7 @@ Tài liệu này tổng hợp các mẫu câu lệnh (prompts) chuẩn để tư
   > Lệnh thực thi: [Tên FR, vd: FR-07 My Tasks Dashboard]
   > - **Luôn ghi nhớ "Hướng dẫn dành cho AI coding" trong file `task.md`. Bắt buộc nạp 2 file ngữ cảnh: `requirements.md` và `design-system.md` trước khi code.**
   > - Đọc kỹ phần yêu cầu của [Tên FR] trong file `task.md`.
+  > - **Tuyệt đối không được bịa (hallucinate) code hay logic. Phải bám sát ngữ cảnh và yêu cầu từ các file tài liệu đã cung cấp.**
   > - Hãy lên kế hoạch chi tiết bao gồm plan test (API/Unit/E2E) trước khi code.
   > - Tiến hành thực thi Backend, Frontend và chạy Test. Bám sát `requirements.md` (logic) và `design-system.md` (UI).
   > - Khi hoàn thành, dùng browser tool kiểm tra giao diện và in ra checklist "Definition of Done" của riêng FR này (đánh dấu `[x]`) để báo cáo.
@@ -82,6 +85,7 @@ Tài liệu này tổng hợp các mẫu câu lệnh (prompts) chuẩn để tư
   Lệnh thực thi: FR-08 Team Kanban Board
   - Luôn ghi nhớ "Hướng dẫn dành cho AI coding"...
   - Đọc kỹ phần yêu cầu của FR-08 trong file task.md.
+  - Tuyệt đối không được bịa, phải bám sát ngữ cảnh tài liệu.
   - Hãy lên kế hoạch chi tiết bao gồm plan test (API/Unit/E2E)...
   - Tiến hành thực thi Backend, Frontend và chạy Test...
   - Khi hoàn thành, in ra checklist "Definition of Done"...
@@ -93,6 +97,7 @@ Tài liệu này tổng hợp các mẫu câu lệnh (prompts) chuẩn để tư
   > Lệnh tiếp tục: Milestone [Tên Milestone, vd: M2]
   > - **Luôn ghi nhớ "Hướng dẫn dành cho AI coding" trong file `task.md`. Bắt buộc nạp 2 file ngữ cảnh: `requirements.md` và `design-system.md` trước khi code.**
   > - Đọc kỹ phần "Milestone [Tên Milestone]" trong `task.md`.
+  > - **Tuyệt đối không được bịa (hallucinate) code hay logic. Phải bám sát ngữ cảnh và yêu cầu từ các file tài liệu đã cung cấp.**
   > - Xác định các FR đã hoàn thành (`[x]`), đang dở (`[/]`) và chưa làm (`[ ]`).
   > - Tiếp tục thực thi từ FR đang dở hoặc FR chưa làm đầu tiên. Không làm lại những FR đã xong.
   > - Khi hoàn thành toàn bộ Milestone, in ra checklist "Acceptance Gate [Tên Milestone]" để báo cáo.
@@ -102,6 +107,7 @@ Tài liệu này tổng hợp các mẫu câu lệnh (prompts) chuẩn để tư
   Lệnh tiếp tục: Milestone M2
   - Luôn ghi nhớ "Hướng dẫn dành cho AI coding" trong file task.md...
   - Đọc kỹ phần "Milestone M2" trong task.md.
+  - Tuyệt đối không được bịa, phải bám sát ngữ cảnh tài liệu.
   - Xác định các FR đã hoàn thành ([x]), đang dở ([/]) và chưa làm ([ ]).
   - Tiếp tục thực thi từ FR đang dở. Không làm lại những FR đã xong.
   - Khi hoàn thành, in ra checklist "Acceptance Gate M2".

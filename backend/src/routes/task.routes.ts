@@ -165,7 +165,7 @@ router.get('/trash', async (req: AuthRequest, res: Response): Promise<void> => {
     const tasks = await prisma.task.findMany({
       where,
       include: {
-        project: { select: { id: true, name: true, color: true } },
+        project: { select: { id: true, name: true, color: true, archivedAt: true } },
         creator: { select: { id: true, name: true } },
         assignee: { select: { id: true, name: true } },
       },

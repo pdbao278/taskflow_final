@@ -210,8 +210,9 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
         trashTasks: state.trashTasks.filter(t => t.id !== taskId),
       }));
       return true;
-    } catch {
-      return false;
+    } catch (err: unknown) {
+      const message = (err as any)?.response?.data?.error || 'Có lỗi xảy ra. Thử lại?';
+      throw new Error(message);
     }
   },
 

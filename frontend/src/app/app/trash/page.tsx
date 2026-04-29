@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Trash2, RotateCcw, Loader2, Clock, FolderOpen } from 'lucide-react';
+import { Trash2, RotateCcw, Loader2, Clock, Filter, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTaskStore, type TrashTask } from '@/features/tasks/stores/task.store';
 import { useWorkspaceStore } from '@/features/workspace/stores/workspace.store';
+import { useProjectStore } from '@/features/projects/stores/project.store';
 import { useRouter } from 'next/navigation';
 
 function CountdownTimer({ deadline }: { deadline: string }) {
@@ -16,7 +17,13 @@ function CountdownTimer({ deadline }: { deadline: string }) {
       if (ms <= 0) { setRemaining('Hết hạn'); return; }
       const days = Math.floor(ms / (1000 * 60 * 60 * 24));
       const hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      setRemaining(`${days}d ${hours}h`);
+      const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+      
+      if (days >= 1) {
+        setRemaining(`Còn ${days} ngày ${hours} giờ`);
+      } else {
+        setRemaining(`Còn ${hours} giờ ${minutes} phút`);
+      }
     };
     update();
     const interval = setInterval(update, 60000);
@@ -34,7 +41,9 @@ export default function TrashPage() {
   const router = useRouter();
   const { currentRole } = useWorkspaceStore();
   const { trashTasks, isLoading, loadTrash, restoreTask } = useTaskStore();
+  const { projects, loadProjects } = useProjectStore();
   const [restoringId, setRestoringId] = useState<string | null>(null);
+  const [projectFilter, setProjectFilter] = useState<string>('');
 
   // Redirect non-admins
   useEffect(() => {
@@ -45,21 +54,18 @@ export default function TrashPage() {
 
   useEffect(() => {
     if (currentRole === 'Admin') {
-      loadTrash();
+      loadTrash(projectFilter);
+      loadProjects();
     }
-  }, [currentRole, loadTrash]);
+  }, [currentRole, loadTrash, loadProjects, projectFilter]);
 
   const handleRestore = async (taskId: string) => {
     setRestoringId(taskId);
     try {
-      const ok = await restoreTask(taskId);
-      if (ok) {
-        toast.success('Task đã được khôi phục');
-      } else {
-        toast.error('Không thể khôi phục task');
-      }
-    } catch {
-      toast.error('Có lỗi xảy ra');
+      await restoreTask(taskId);
+      toast.success('Task đã được khôi phục thành công');
+    } catch (err: any) {
+      toast.error(err.message || 'Không thể khôi phục task');
     } finally {
       setRestoringId(null);
     }
@@ -68,88 +74,125 @@ export default function TrashPage() {
   if (currentRole !== 'Admin') return null;
 
   return (
-    <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
-        <Trash2 size={22} color="var(--text-secondary)" />
-        <h1 style={{ fontSize: '20px', fontWeight: 700, margin: 0 }}>Thùng rác</h1>
-        <span style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 500 }}>
-          Task đã xóa sẽ tự động bị xóa vĩnh viễn sau 30 ngày
-        </span>
+    <div style={{ width: '100%', flex: 1 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Trash2 size={22} color="var(--text-secondary)" />
+          <h1 style={{ fontSize: '20px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>Thùng rác</h1>
+          <span style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 500 }}>
+            Task đã xóa sẽ tự động bị xóa vĩnh viễn sau 30 ngày
+          </span>
+        </div>
+        
+        {/* Filter Dropdown */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Filter size={16} color="var(--text-muted)" />
+          <select 
+            value={projectFilter} 
+            onChange={e => setProjectFilter(e.target.value)}
+            style={{ 
+              padding: '6px 12px', 
+              borderRadius: '6px', 
+              border: '1px solid var(--border)', 
+              fontSize: '13px', 
+              outline: 'none',
+              background: 'white',
+              cursor: 'pointer'
+            }}
+          >
+            <option value="">Dự án: Tất cả</option>
+            {projects.map(p => (
+              <option key={p.id} value={p.id}>{p.name}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {isLoading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}>
-          <Loader2 size={24} className="animate-spin" color="var(--primary)" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="animate-pulse" style={{ height: '48px', width: '100%', background: 'var(--border)', borderRadius: '8px' }} />
+          ))}
         </div>
       ) : trashTasks.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '80px 24px' }}>
-          <Trash2 size={48} color="var(--text-muted)" style={{ marginBottom: '16px', opacity: 0.4 }} />
+          <Trash2 size={48} color="var(--text-muted)" style={{ marginBottom: '16px', opacity: 0.4, display: 'inline-block' }} />
           <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>Thùng rác trống</h2>
-          <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Không có task nào đã xóa</p>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Không có task nào đã xóa.</p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {/* Header row */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 140px 120px 100px 80px', gap: '12px', padding: '8px 16px', fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid var(--border)' }}>
-            <span>Task</span>
+          {/* Header row: 6 columns */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 1fr) 140px 140px 120px 140px 100px', gap: '12px', padding: '8px 16px', fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid var(--border)' }}>
+            <span>Tiêu đề</span>
             <span>Dự án</span>
-            <span>Xóa bởi</span>
+            <span>Người xóa</span>
+            <span>Ngày xóa</span>
             <span>Còn lại</span>
-            <span></span>
+            <span>Actions</span>
           </div>
 
-          {trashTasks.map((task: TrashTask) => (
-            <div key={task.id}
-              style={{ display: 'grid', gridTemplateColumns: '1fr 140px 120px 100px 80px', gap: '12px', padding: '12px 16px', alignItems: 'center', background: 'white', border: '1px solid var(--border)', borderRadius: '8px', transition: 'box-shadow 0.15s' }}
-              onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)')}
-              onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}>
-              {/* Title */}
-              <div>
+          {trashTasks.map((task: TrashTask) => {
+            const isArchived = !!task.project?.archivedAt;
+            
+            return (
+              <div key={task.id}
+                style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 1fr) 140px 140px 120px 140px 100px', gap: '12px', padding: '12px 16px', alignItems: 'center', background: 'white', border: '1px solid var(--border)', borderRadius: '8px', transition: 'box-shadow 0.15s' }}
+                onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)')}
+                onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}>
+                {/* Title */}
                 <p style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {task.title}
                 </p>
-                <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '2px 0 0' }}>
-                  Xóa lúc {new Date(task.deletedAt!).toLocaleDateString('vi-VN')}
-                </p>
+
+                {/* Project */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  {task.project ? (
+                    <>
+                      <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: task.project.color, flexShrink: 0 }} />
+                      <span style={{ fontSize: '12px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={isArchived ? "Dự án đã archive" : ""}>
+                        {task.project.name} {isArchived && <AlertCircle size={10} color="var(--destructive)" style={{ display: 'inline', marginLeft: '2px', position: 'relative', top: '-1px' }}/>}
+                      </span>
+                    </>
+                  ) : (
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>-</span>
+                  )}
+                </div>
+
+                {/* Deleted by */}
+                <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{task.deletedBy}</span>
+
+                {/* Date deleted */}
+                <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                  {new Date(task.deletedAt!).toLocaleDateString('vi-VN')}
+                </span>
+
+                {/* Countdown */}
+                {task.restoreDeadline ? <CountdownTimer deadline={task.restoreDeadline} /> : <span>-</span>}
+
+                {/* Restore button */}
+                <div title={isArchived ? "Dự án đã archive. Không thể khôi phục task." : "Khôi phục"}>
+                  <button
+                    onClick={() => handleRestore(task.id)}
+                    disabled={restoringId === task.id || isArchived}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '4px', padding: '6px 10px',
+                      border: '1px solid var(--border)', borderRadius: '6px', background: 'white',
+                      cursor: (restoringId === task.id || isArchived) ? 'not-allowed' : 'pointer',
+                      fontSize: '12px', fontWeight: 500, color: isArchived ? 'var(--text-muted)' : 'var(--primary)',
+                      transition: 'background 0.15s', opacity: (restoringId === task.id || isArchived) ? 0.6 : 1,
+                      width: 'fit-content'
+                    }}
+                    onMouseEnter={e => !isArchived && (e.currentTarget.style.background = 'hsl(221 83% 53% / 0.06)')}
+                    onMouseLeave={e => !isArchived && (e.currentTarget.style.background = 'white')}
+                  >
+                    {restoringId === task.id ? <Loader2 size={12} className="animate-spin" /> : <RotateCcw size={12} />}
+                    Khôi phục
+                  </button>
+                </div>
               </div>
-
-              {/* Project */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                {task.project && (
-                  <>
-                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: task.project.color, flexShrink: 0 }} />
-                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {task.project.name}
-                    </span>
-                  </>
-                )}
-              </div>
-
-              {/* Deleted by */}
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{task.deletedBy}</span>
-
-              {/* Countdown */}
-              {task.restoreDeadline && <CountdownTimer deadline={task.restoreDeadline} />}
-
-              {/* Restore button */}
-              <button
-                onClick={() => handleRestore(task.id)}
-                disabled={restoringId === task.id}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '4px', padding: '6px 10px',
-                  border: '1px solid var(--border)', borderRadius: '6px', background: 'white',
-                  cursor: restoringId === task.id ? 'not-allowed' : 'pointer',
-                  fontSize: '12px', fontWeight: 500, color: 'var(--primary)',
-                  transition: 'background 0.15s', opacity: restoringId === task.id ? 0.7 : 1,
-                }}
-                onMouseEnter={e => (e.currentTarget.style.background = 'hsl(221 83% 53% / 0.06)')}
-                onMouseLeave={e => (e.currentTarget.style.background = 'white')}
-              >
-                {restoringId === task.id ? <Loader2 size={12} className="animate-spin" /> : <RotateCcw size={12} />}
-                Khôi phục
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

@@ -12,8 +12,8 @@ interface SendInviteEmailParams {
 }
 
 const ROLE_LABEL: Record<string, string> = {
-  Manager: 'Quản lý',
-  Member: 'Thành viên',
+  Manager: 'Manager',
+  Member: 'Member',
 };
 
 export async function sendInviteEmail(params: SendInviteEmailParams): Promise<void> {

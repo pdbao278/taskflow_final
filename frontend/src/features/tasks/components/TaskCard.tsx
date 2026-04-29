@@ -89,12 +89,15 @@ export default function TaskCard({ task, onClick, dragDisabled, variant = 'kanba
         {/* Row 2: Title & Badges */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
           {/* Title */}
-          <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-primary)', wordBreak: 'break-word', flex: 1 }}>
+          <span style={{ 
+            fontSize: '14px', fontWeight: 500, color: 'var(--text-primary)', wordBreak: 'break-word', flex: 1,
+            display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis'
+          }}>
             {task.title}
           </span>
 
           {/* Badges */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, flexWrap: 'nowrap', overflow: 'hidden' }}>
             {/* StatusBadge */}
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 600, padding: '2px 8px', borderRadius: '9999px', background: status.bg, color: status.color }}>
               <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: status.dot, flexShrink: 0 }} />
@@ -135,6 +138,7 @@ export default function TaskCard({ task, onClick, dragDisabled, variant = 'kanba
         flexDirection: 'column',
         gap: '8px',
         boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+        height: '180px',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.1)';
@@ -175,21 +179,28 @@ export default function TaskCard({ task, onClick, dragDisabled, variant = 'kanba
       )}
 
       {/* Row 2: Title */}
-      <p
-        style={{
-          fontSize: '16px',
-          fontWeight: 600,
-          color: 'var(--text-primary)',
-          margin: '0 0 4px',
-          lineHeight: 1.4,
-          wordBreak: 'break-word',
-        }}
-      >
-        {task.title}
-      </p>
+      <div style={{ flex: 1, minHeight: 0 }}>
+        <p
+          style={{
+            fontSize: '16px',
+            fontWeight: 600,
+            color: 'var(--text-primary)',
+            margin: '0 0 4px',
+            lineHeight: 1.4,
+            wordBreak: 'break-word',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {task.title}
+        </p>
+      </div>
 
       {/* Row 3: StatusBadge + PriorityBadge + OverdueBadge */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '4px' }}>
+      <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '6px', marginBottom: '4px', overflow: 'hidden', flexShrink: 0 }}>
         {/* StatusBadge */}
         <span
           style={{
@@ -254,7 +265,7 @@ export default function TaskCard({ task, onClick, dragDisabled, variant = 'kanba
       </div>
 
       {/* Row 4: Assignee (left) + Due date (right) */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
         {/* Assignee */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         {task.assignee ? (

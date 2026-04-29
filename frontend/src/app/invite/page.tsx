@@ -102,7 +102,7 @@ function InvitePageContent() {
     }
   };
 
-  const ROLE_LABEL: Record<string, string> = { Manager: 'Quản lý', Member: 'Thành viên' };
+  const ROLE_LABEL: Record<string, string> = { Manager: 'Manager', Member: 'Member' };
 
   // ── Loading ──────────────────────────────────────────────────────────────────
   if (status === 'loading') {

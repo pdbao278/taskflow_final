@@ -41,7 +41,7 @@ function RoleBadge({ role }: { role: string }) {
     Manager: { background: 'hsl(38 92% 50% / 0.12)', color: 'hsl(38 92% 40%)' },
     Member: { background: 'hsl(142 71% 45% / 0.12)', color: 'hsl(142 71% 35%)' },
   };
-  const labels: Record<string, string> = { Admin: 'Admin', Manager: 'Quản lý', Member: 'Thành viên' };
+  const labels: Record<string, string> = { Admin: 'Admin', Manager: 'Manager', Member: 'Member' };
   return (
     <span style={{
       ...styles[role],
@@ -279,8 +279,8 @@ export default function MembersPage() {
               color: 'var(--text-primary)', cursor: 'pointer',
             }}
           >
-            <option value="Member">Thành viên</option>
-            <option value="Manager">Quản lý</option>
+            <option value="Member">Member</option>
+            <option value="Manager">Manager</option>
           </select>
           <button
             id="send-invite-btn"
@@ -372,8 +372,8 @@ export default function MembersPage() {
                               cursor: 'pointer', color: 'var(--text-primary)',
                             }}
                           >
-                            <option value="Manager">Quản lý</option>
-                            <option value="Member">Thành viên</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Member">Member</option>
                           </select>
                         )}
                       </td>

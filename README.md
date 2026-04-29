@@ -98,21 +98,31 @@ npx prisma generate
 
 **5. Khởi chạy dự án**
 
-Mở 2 terminal để chạy song song 2 server.
+Bạn có thể cài đặt toàn bộ dependencies và chạy cả Frontend lẫn Backend song song bằng lệnh ở thư mục gốc:
 
-*Terminal 1 (Backend):*
 ```bash
-cd backend
+npm run install:all
 npm run dev
-# Server chạy tại http://localhost:5000
 ```
+- Backend chạy tại http://localhost:5000
+- Frontend chạy tại http://localhost:3000
 
-*Terminal 2 (Frontend):*
-```bash
-cd frontend
-npm run dev
-# App chạy tại http://localhost:3000
-```
+---
+
+## ☁️ Hướng dẫn Deploy lên Vercel
+
+Dự án này được cấu hình sẵn để deploy cả Frontend và Backend (Express) lên **Vercel**. Quá trình tốt nhất là tạo 2 project trên Vercel kết nối chung vào repository này:
+
+**1. Deploy Backend (Vercel Project 1):**
+- **Framework Preset**: Other
+- **Root Directory**: `backend`
+- Thêm toàn bộ các biến môi trường (Environment Variables) cần thiết như `DATABASE_URL`, `JWT_SECRET`, `BREVO_API_KEY`, `BREVO_SENDER_EMAIL`.
+- Vercel sẽ tự động đọc cấu hình `vercel.json` và thư mục `api/` để chạy Backend như Serverless Functions.
+
+**2. Deploy Frontend (Vercel Project 2):**
+- **Framework Preset**: Next.js
+- **Root Directory**: `frontend`
+- Thêm biến môi trường: `NEXT_PUBLIC_API_URL` (ví dụ: `https://taskflow-backend.vercel.app/api`).
 
 ---
 

@@ -2142,9 +2142,9 @@ Then:
 
 ### Deploy Checklist
 
-- [ ] Backend deploy lên Railway (Node.js + PostgreSQL)
-- [ ] Frontend deploy lên Vercel (Next.js)
-- [ ] Environment variables set đúng trên Railway + Vercel
+- [ ] BE chạy port 5000 và deploy cả FE và BE lên Vercel
+- [ ] Database PostgreSQL host ngoài (VD: Supabase, Neon)
+- [ ] Environment variables set đúng trên Vercel cho cả 2 project
 - [ ] Database migration chạy thành công
 - [ ] Health check endpoint `/health` trả 200
 
@@ -2182,6 +2182,6 @@ Then:
 
 ### Operational Notes cho AI Agents
 
-- **Ports**: Chạy `npm run dev` ở thư mục gốc (root) sẽ tự động bật Frontend (Next.js) ở port `3000` và Backend (Express) ở port `3001` qua `concurrently`.
+- **Ports**: Chạy `npm run dev` ở thư mục gốc (root) sẽ tự động bật Frontend (Next.js) ở port `3000` và Backend (Express) ở port `5000` qua `concurrently`.
 - **Prisma**: Bắt buộc sử dụng `@prisma/client` và `prisma` version `^5.21.1`. Tuyệt đối không dùng Prisma v7 do v7 có breaking changes yêu cầu adapter thay vì truyền `DATABASE_URL` trực tiếp. Mọi lệnh migration cần tuân thủ v5.x.
 - **Biến môi trường**: Đảm bảo `BREVO_API_KEY` và `BREVO_SENDER_EMAIL` đã được người dùng điền đầy đủ và `BREVO_SENDER_EMAIL` là email thực đã được xác thực trên Brevo để tránh lỗi gửi email invite.

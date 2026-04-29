@@ -138,7 +138,7 @@ function MyTasksContent() {
             <div style={{ textAlign: 'center' }}>
               <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 4px 0' }}>Không có công việc nào</h3>
               <p style={{ fontSize: '14px', margin: 0 }}>
-                {searchQuery ? 'Không tìm thấy công việc phù hợp với từ khóa.' : 'Tuyệt vời! Bạn không có công việc nào cần xử lý.'}
+                {searchQuery ? 'Không tìm thấy công việc phù hợp với từ khóa.' : 'Bạn chưa có task nào. Hãy liên hệ Manager để được assign công việc.'}
               </p>
             </div>
           </div>

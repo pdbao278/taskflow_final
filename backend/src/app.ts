@@ -12,6 +12,7 @@ import taskRoutes from './routes/task.routes';
 import notificationRoutes from './routes/notification.routes';
 import myTasksRoutes from './routes/my-tasks.routes';
 import reportRoutes from './routes/report.routes';
+import searchRoutes from './routes/search.routes';
 
 const app = express();
 
@@ -57,6 +58,7 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/my-tasks', myTasksRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/search', searchRoutes);
 
 // ─── Error Handler ────────────────────────────────────────────────────────────
 app.use(errorHandler);

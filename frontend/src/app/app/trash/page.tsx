@@ -8,6 +8,18 @@ import { useWorkspaceStore } from '@/features/workspace/stores/workspace.store';
 import { useProjectStore } from '@/features/projects/stores/project.store';
 import { useRouter } from 'next/navigation';
 
+function getInitials(name: string): string {
+  if (!name) return '??';
+  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+}
+
+function getAvatarColor(id: string): string {
+  const colors = ['#4f46e5','#0891b2','#059669','#d97706','#dc2626','#7c3aed','#db2777'];
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = id.charCodeAt(i) + ((hash << 5) - hash);
+  return colors[Math.abs(hash) % colors.length];
+}
+
 function CountdownTimer({ deadline }: { deadline: string }) {
   const [remaining, setRemaining] = useState('');
 
@@ -160,7 +172,19 @@ export default function TrashPage() {
                 </div>
 
                 {/* Deleted by */}
-                <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{task.deletedBy}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{
+                    width: '24px', height: '24px', borderRadius: '50%',
+                    background: getAvatarColor(task.deletedBy), color: 'white',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '10px', fontWeight: 600, flexShrink: 0
+                  }} title={task.deletedBy}>
+                    {getInitials(task.deletedBy)}
+                  </div>
+                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {task.deletedBy}
+                  </span>
+                </div>
 
                 {/* Date deleted */}
                 <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>

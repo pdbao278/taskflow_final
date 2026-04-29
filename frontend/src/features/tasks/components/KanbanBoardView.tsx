@@ -136,7 +136,7 @@ export default function KanbanBoardView({ tasks, onTaskClick, onStatusChange, is
 
     try {
       await onStatusChange(activeTask.id, newStatus);
-      toast.success(`Đã đổi trạng thái thành ${newStatusLabel}`);
+      toast.success(`Đã đổi trạng thái thành ${newStatusLabel?.toUpperCase()}`);
     } catch (err) {
       // rollback handled by optimistic update logic in caller
     }

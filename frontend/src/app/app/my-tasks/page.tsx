@@ -72,12 +72,12 @@ function MyTasksContent() {
                   padding: '6px 16px',
                   border: 'none',
                   borderRadius: '6px',
-                  background: filter === tab ? 'white' : 'transparent',
-                  color: filter === tab ? 'var(--text-primary)' : 'var(--text-muted)',
+                  background: filter === tab ? 'var(--primary)' : 'transparent',
+                  color: filter === tab ? 'white' : 'var(--text-muted)',
                   fontSize: '14px',
                   fontWeight: filter === tab ? 600 : 500,
                   cursor: 'pointer',
-                  boxShadow: filter === tab ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                  boxShadow: filter === tab ? '0 2px 4px rgba(37, 99, 235, 0.2)' : 'none',
                   transition: 'all 0.2s',
                 }}
               >

@@ -88,6 +88,7 @@ In ra checklist "Acceptance Gate M5" (đánh dấu [x] các mục đã xong) và
 
 ---------Chỉnh sửa,thay đổi UI
 
-Ở file task.ts phần FR-xx, tôi muốn thay đổi như sau:
--Tôi muốn thay đổi vị trí nút từ "+New Task" trong phần Column Status: Đang thực hiện xuống dưới cùng của cột
+Ở trang app/my-task tôi muốn màu bộ lọc sang màu xanh.Hãy đổi và thực hiện đồng bộ lên file file design-system.md cho tôi.
+
+
 

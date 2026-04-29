@@ -4,6 +4,18 @@ import { useReports } from '../hooks/useReports';
 import { Loader2, AlertCircle, BarChart3, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+function getInitials(name: string): string {
+  if (!name) return '??';
+  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+}
+
+function getAvatarColor(id: string): string {
+  const colors = ['#4f46e5','#0891b2','#059669','#d97706','#dc2626','#7c3aed','#db2777'];
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = id.charCodeAt(i) + ((hash << 5) - hash);
+  return colors[Math.abs(hash) % colors.length];
+}
+
 export default function ReportsDashboard() {
   const { data, isLoading, isRefreshing, error, refetch } = useReports();
   const router = useRouter();
@@ -137,7 +149,19 @@ export default function ReportsDashboard() {
                   title="Xem công việc của thành viên này"
                 >
                   <td style={{ padding: '12px 8px', fontWeight: 500, color: 'var(--text-primary)' }}>
-                    {m.name}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{
+                        width: '24px', height: '24px', borderRadius: '50%',
+                        background: getAvatarColor(m.id), color: 'white',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '10px', fontWeight: 600, flexShrink: 0
+                      }} title={m.name}>
+                        {getInitials(m.name)}
+                      </div>
+                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {m.name}
+                      </span>
+                    </div>
                   </td>
                   <td style={{ padding: '12px 8px', textAlign: 'center' }}>{m.assigned}</td>
                   <td style={{ padding: '12px 8px', textAlign: 'center', color: m.completed > 0 ? 'var(--status-done)' : 'inherit' }}>

@@ -1210,9 +1210,12 @@ Dùng ở 2 nơi:
     - Nút xóa (icon `UserMinus`), Admin tự xóa → disabled + tooltip
     - Avatar `md` (32px) với 2-char initials
   - **Section 2: "Lời mời đang chờ" (pending):** Hiển thị riêng dưới section thành viên
-    - Mỗi pending invite: email + `RoleBadge` + `PendingBadge` (warning-bg, warning text) + **countdown timer**
+    - Mỗi pending invite: Trạng thái (`PendingBadge` warning) + Email + `RoleBadge` + **countdown timer**
     - **Countdown format:** `HH:MM:SS` đếm ngược thời gian thực (cập nhật mỗi giây, font monospace). Khi hết hạn: "Đã hết hạn" (text destructive)
     - Empty pending: ẩn section, không hiện empty state
+  - **Bố cục các bảng (Table Layout Alignment):** Cả hai bảng (Thành viên & Lời mời) bắt buộc sử dụng `table-layout: fixed` và định cỡ cột chính xác để đảm bảo các cột tương ứng gióng thẳng hàng với nhau:
+    - Bảng "Thành viên": Tên (25%) | Email (35%) | Vai trò (20%) | Hành động (20%)
+    - Bảng "Lời mời đang chờ": Trạng thái (25% - gióng với Tên) | Email (35%) | Vai trò (20%) | Còn lại (20% - gióng với Hành động)
 - **Xóa member confirm:** "Bạn chắc chắn muốn xóa [name] khỏi workspace? Task đã assign sẽ hiển thị '[Removed User]'."
 - **Admin tự xóa:** Nút disabled + tooltip "Không thể xóa Admin đang đăng nhập."
 - **Removed user tasks:** Task giữ nguyên `assigneeId` trong DB. Backend tự động đối chiếu và trả về cờ `isAssigneeRemoved: true`. Frontend dựa vào cờ này để hiển thị "[Removed User]" thay tên assignee cùng avatar xám (RU).
@@ -1637,7 +1640,7 @@ Layout: `flex items-center gap-2`, căn trái search — căn phải filter grou
 | **Search input** | `h-9`, `w-[200px]`, icon 🔍 bên trái trong input, placeholder "Tìm kiếm task...", border `border-slate-200`, `rounded-lg`, client-side filter instant |
 | **Refresh button** | Icon button `h-9 w-9`, border `border-slate-200`, icon `↻` (RefreshCw), spinner khi loading, `rounded-lg` |
 | **Filter icon** | Icon `▽` (SlidersHorizontal) text-slate-500, visual separator trước filter pills |
-| **Filter pills** | `Tất cả` / `To Do` / `In Progress` — pill style: `px-3 py-1 rounded-md text-sm font-medium`. Active: `bg-violet-600 text-white`. Inactive: `bg-transparent text-slate-600 hover:bg-slate-100` |
+| **Filter pills** | `Tất cả` / `To Do` / `In Progress` — pill style: `px-3 py-1 rounded-md text-sm font-medium`. Active: `bg-primary text-white`. Inactive: `bg-transparent text-slate-600 hover:bg-slate-100` |
 
 > **Lưu ý:** Filter pills nằm bên phải, cùng hàng với search. Không dùng `rounded-full` mà dùng `rounded-md`.
 
@@ -1850,7 +1853,9 @@ Row 4: [Avatar] Name        Due Date   (space-between, text-sm)
 - **Trigger:** Gõ ≥ 2 ký tự → dropdown hiện dưới search box
 - **Width:** Bằng search bar (match `clamp(280px, 36vw, 520px)`) — full-width trên mobile
 - **Max results:** 10
-- **Mỗi result:** Task title (bold keyword match) + Project name + Assignee name (caption)
+- **Mỗi result:** Chia làm 2 cột:
+  - Trái: Task title (bold keyword match) + dòng dưới: Project name (color dot).
+  - Phải (góc cuối ở dưới): Assignee name/avatar (nếu không có thì ghi "Chưa assign" màu xám) + Due date (icon Calendar, format DD/MM/YYYY, nếu quá hạn thì chữ màu đỏ `destructive`, nếu chưa thì màu xám nhạt).
 - **Click result:** Mở `TaskDetailSheet` + đóng dropdown
 - **Loading:** Spinner nhỏ trong dropdown khi API > 300ms
 - **Empty:** "Không tìm thấy task nào với từ khóa này"

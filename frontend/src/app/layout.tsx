@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
+import OfflineBanner from "@/components/OfflineBanner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,6 +16,7 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body>
+        <OfflineBanner />
         {children}
         <Toaster
           position="bottom-right"

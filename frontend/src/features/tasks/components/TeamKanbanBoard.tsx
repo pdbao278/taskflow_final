@@ -133,27 +133,36 @@ export default function TeamKanbanBoard({ onTaskClick, onAddTaskClick }: TeamKan
 
     if (!isActiveTask) return;
 
-    setTasks(tasks => {
-      const activeIndex = tasks.findIndex(t => t.id === activeId);
-      const activeTask = tasks[activeIndex];
+    setTasks(prevTasks => {
+      const activeIndex = prevTasks.findIndex(t => t.id === activeId);
+      if (activeIndex === -1) return prevTasks;
+      
+      const activeTask = { ...prevTasks[activeIndex] };
       
       if (isOverTask) {
-        const overIndex = tasks.findIndex(t => t.id === overId);
-        const overTask = tasks[overIndex];
+        const overIndex = prevTasks.findIndex(t => t.id === overId);
+        if (overIndex === -1) return prevTasks;
+        const overTask = prevTasks[overIndex];
         
         if (activeTask.status !== overTask.status) {
           activeTask.status = overTask.status as any;
-          return arrayMove(tasks, activeIndex, overIndex);
+          const newTasks = [...prevTasks];
+          newTasks[activeIndex] = activeTask;
+          return arrayMove(newTasks, activeIndex, overIndex);
         }
-        return arrayMove(tasks, activeIndex, overIndex);
+        return arrayMove(prevTasks, activeIndex, overIndex);
       }
 
       if (isOverColumn) {
-        activeTask.status = overId as any;
-        return arrayMove(tasks, activeIndex, activeIndex);
+        if (activeTask.status !== overId) {
+          activeTask.status = overId as any;
+          const newTasks = [...prevTasks];
+          newTasks[activeIndex] = activeTask;
+          return arrayMove(newTasks, activeIndex, activeIndex);
+        }
       }
 
-      return tasks;
+      return prevTasks;
     });
   };
 
@@ -179,6 +188,8 @@ export default function TeamKanbanBoard({ onTaskClick, onAddTaskClick }: TeamKan
     if (targetStatus && activeTask && activeTask.status !== targetStatus) {
       try {
         await apiClient.patch(`/tasks/${activeId}/status`, { status: targetStatus });
+        const newStatusLabel = COLUMNS.find(c => c.id === targetStatus)?.title || targetStatus;
+        toast.success(`Đã đổi trạng thái thành ${newStatusLabel}`);
         // Optionally refetch in background to sync
         refetch(true);
       } catch (err) {

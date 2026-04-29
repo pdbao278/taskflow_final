@@ -42,6 +42,8 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
   },
 
   loadUnreadCount: async () => {
+    if (typeof window !== 'undefined' && !navigator.onLine) return; // Skip polling if offline
+
     try {
       const unreadCount = await fetchUnreadCount();
       set({ unreadCount });
@@ -50,8 +52,11 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
       // - 400: workspace not yet loaded (x-workspace-id header missing)
       // - 429: rate limit
       // - 503: service unavailable
+      // - Network Error: backend unreachable or CORS
       const status = err?.response?.status;
-      if (status !== 400 && status !== 429 && status !== 503) {
+      const isNetworkError = err?.message === 'Network Error';
+      
+      if (status !== 400 && status !== 429 && status !== 503 && !isNetworkError) {
         console.warn('Notification poll error:', status ?? err?.message);
       }
     }

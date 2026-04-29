@@ -79,7 +79,12 @@ export default function AppSidebar() {
   const userRole: MemberRole = (currentRole as MemberRole) ?? 'Member';
   const currentWs = workspaces.find(w => w.id === currentWorkspaceId);
 
-  const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
+  const isActive = (href: string) => {
+    if (href === '/app/settings') {
+      return pathname === href;
+    }
+    return pathname === href || pathname.startsWith(href + '/');
+  };
 
   const handleSwitchWorkspace = (wsId: string) => {
     const ws = workspaces.find(w => w.id === wsId);

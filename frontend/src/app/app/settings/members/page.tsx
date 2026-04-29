@@ -317,17 +317,23 @@ export default function MembersPage() {
               Thành viên ({members.length})
             </h2>
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
                 <thead>
                   <tr>
-                    {['Tên', 'Email', 'Vai trò', 'Hành động'].map(col => (
-                      <th key={col} style={{
+                    {[
+                      { label: 'Tên', width: '25%' },
+                      { label: 'Email', width: '35%' },
+                      { label: 'Vai trò', width: '20%' },
+                      { label: 'Hành động', width: '20%' }
+                    ].map(col => (
+                      <th key={col.label} style={{
+                        width: col.width,
                         textAlign: 'left', padding: '8px 12px',
                         fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)',
                         textTransform: 'uppercase', letterSpacing: '0.05em',
                         borderBottom: '1px solid var(--border)',
                       }}>
-                        {col}
+                        {col.label}
                       </th>
                     ))}
                   </tr>
@@ -422,17 +428,23 @@ export default function MembersPage() {
                 Lời mời đang chờ ({pendingInvites.length})
               </h2>
               <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
                   <thead>
                     <tr>
-                      {['Email', 'Vai trò', 'Trạng thái', 'Còn lại'].map(col => (
-                        <th key={col} style={{
+                      {[
+                        { label: 'Trạng thái', width: '25%' },
+                        { label: 'Email', width: '35%' },
+                        { label: 'Vai trò', width: '20%' },
+                        { label: 'Còn lại', width: '20%' }
+                      ].map(col => (
+                        <th key={col.label} style={{
                           textAlign: 'left', padding: '8px 12px',
                           fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)',
                           textTransform: 'uppercase', letterSpacing: '0.05em',
                           borderBottom: '1px solid var(--border)',
+                          width: col.width,
                         }}>
-                          {col}
+                          {col.label}
                         </th>
                       ))}
                     </tr>
@@ -440,14 +452,14 @@ export default function MembersPage() {
                   <tbody>
                     {pendingInvites.map(invite => (
                       <tr key={invite.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                        <td style={{ padding: '12px 12px' }}>
+                          <PendingBadge />
+                        </td>
                         <td style={{ padding: '12px 12px', fontSize: '13px', color: 'var(--text-primary)' }}>
                           {invite.email}
                         </td>
                         <td style={{ padding: '12px 12px' }}>
                           <RoleBadge role={invite.role} />
-                        </td>
-                        <td style={{ padding: '12px 12px' }}>
-                          <PendingBadge />
                         </td>
                         <td style={{ padding: '12px 12px' }}>
                           <CountdownTimer expiresAt={invite.expiresAt} />

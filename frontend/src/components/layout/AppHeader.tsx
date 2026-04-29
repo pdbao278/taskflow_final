@@ -6,6 +6,7 @@ import { Zap, LogOut, Search, ChevronDown } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuthStore, authApi } from '@/features/auth/stores/auth.store';
 import NotificationBell from '@/features/notifications/components/NotificationBell';
+import SearchBox from '@/features/search/components/SearchBox';
 import Link from 'next/link';
 
 function getInitials(name: string): string {
@@ -60,32 +61,7 @@ export default function AppHeader() {
       </div>
 
       {/* Center: Search box */}
-      <div style={{
-        width: 'clamp(280px, 36vw, 520px)',
-        position: 'relative',
-      }}>
-        <Search size={15} style={{
-          position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)',
-          color: 'var(--text-muted)',
-        }} />
-        <input
-          type="text"
-          placeholder="Tìm kiếm task..."
-          readOnly
-          style={{
-            width: '100%', height: '36px', padding: '0 40px 0 32px',
-            border: '1px solid var(--border)', borderRadius: '8px',
-            fontSize: '13px', background: 'var(--surface)', cursor: 'pointer',
-            outline: 'none', color: 'var(--text-muted)',
-          }}
-        />
-        <span style={{
-          position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)',
-          fontSize: '11px', color: 'var(--text-muted)', background: 'white',
-          border: '1px solid var(--border)', padding: '1px 5px', borderRadius: '4px',
-          fontFamily: 'monospace',
-        }}>⌘K</span>
-      </div>
+      <SearchBox />
 
       {/* Right: Bell + Avatar + Name */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>

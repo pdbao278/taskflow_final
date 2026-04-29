@@ -9,7 +9,7 @@ interface FetchMyTasksResponse {
   };
 }
 
-export const useMyTasks = (statusFilter: 'All' | 'ToDo' | 'InProgress' = 'All') => {
+export const useMyTasks = (statusFilter: 'All' | 'ToDo' | 'InProgress' = 'All', userId?: string) => {
   const [data, setData] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,16 +18,18 @@ export const useMyTasks = (statusFilter: 'All' | 'ToDo' | 'InProgress' = 'All') 
     setIsLoading(true);
     setError(null);
     try {
-      const response = await apiClient.get<FetchMyTasksResponse>('/my-tasks', {
-        params: statusFilter !== 'All' ? { status: statusFilter } : undefined,
-      });
+      const params: any = {};
+      if (statusFilter !== 'All') params.status = statusFilter;
+      if (userId) params.userId = userId;
+
+      const response = await apiClient.get<FetchMyTasksResponse>('/my-tasks', { params });
       setData(response.data.data.tasks);
     } catch (err: unknown) {
       setError((err as any)?.response?.data?.error || 'Có lỗi xảy ra');
     } finally {
       setIsLoading(false);
     }
-  }, [statusFilter]);
+  }, [statusFilter, userId]);
 
   useEffect(() => {
     fetchTasks();

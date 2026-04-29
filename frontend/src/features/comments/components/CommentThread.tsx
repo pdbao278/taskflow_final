@@ -13,9 +13,10 @@ const formatDateTime = (dateStr: string) => {
 
 interface CommentThreadProps {
   taskId: string;
+  readOnly?: boolean;
 }
 
-export function CommentThread({ taskId }: CommentThreadProps) {
+export function CommentThread({ taskId, readOnly }: CommentThreadProps) {
   const { data: comments, setData, isLoading, refetch } = useComments(taskId);
   const { data: members = [] } = useWorkspaceMembers();
   const { user } = useAuthStore();
@@ -57,9 +58,9 @@ export function CommentThread({ taskId }: CommentThreadProps) {
       <div className="flex flex-col h-full">
         <div className="flex flex-col items-center justify-center py-8 text-center text-text-muted flex-1">
           <MessageSquare className="w-8 h-8 mb-2 opacity-20" />
-          <p className="text-sm">Chưa có bình luận nào. Hãy viết bình luận đầu tiên.</p>
+          <p className="text-sm">Chưa có bình luận nào.</p>
         </div>
-        <CommentForm taskId={taskId} onSuccess={refetch} onMutate={handleOptimisticSubmit} onError={handleOptimisticError} />
+        {!readOnly && <CommentForm taskId={taskId} onSuccess={refetch} onMutate={handleOptimisticSubmit} onError={handleOptimisticError} />}
       </div>
     );
   }
@@ -137,7 +138,7 @@ export function CommentThread({ taskId }: CommentThreadProps) {
                 <span className="text-[14px] font-semibold" style={{ color: 'var(--text-primary)' }}>{comment.user?.name || 'Unknown'}</span>
                 <span className="text-[12px]" style={{ color: 'var(--text-muted)' }}>{formatDateTime(comment.createdAt)}</span>
                 
-                {isAuthor && !comment.id.startsWith('optimistic-') && (
+                {isAuthor && !readOnly && !comment.id.startsWith('optimistic-') && (
                   <button
                     className="w-6 h-6 ml-auto opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-destructive hover:bg-destructive/10 rounded"
                     onClick={() => {
@@ -157,7 +158,7 @@ export function CommentThread({ taskId }: CommentThreadProps) {
           </div>
         );
       })}
-      <CommentForm taskId={taskId} onSuccess={refetch} onMutate={handleOptimisticSubmit} onError={handleOptimisticError} />
+      {!readOnly && <CommentForm taskId={taskId} onSuccess={refetch} onMutate={handleOptimisticSubmit} onError={handleOptimisticError} />}
     </div>
   );
 }

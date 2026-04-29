@@ -18,6 +18,7 @@ interface TaskDetailSheetProps {
   task: Task | null;
   onUpdated?: () => void;
   onDeleted?: () => void;
+  readOnly?: boolean;
 }
 
 interface Member { id: string; userId: string; name: string; email: string; role: string; }
@@ -45,7 +46,7 @@ function formatDate(d: string | null) {
   return `${day}/${month}/${year}`;
 }
 
-export default function TaskDetailSheet({ open, onClose, task, onUpdated, onDeleted }: TaskDetailSheetProps) {
+export default function TaskDetailSheet({ open, onClose, task, onUpdated, onDeleted, readOnly }: TaskDetailSheetProps) {
   const { updateTask, deleteTask, updateTaskStatus } = useTaskStore();
   const { currentRole } = useWorkspaceStore();
   const { user } = useAuthStore();
@@ -66,13 +67,13 @@ export default function TaskDetailSheet({ open, onClose, task, onUpdated, onDele
   const [memberSearch, setMemberSearch] = useState('');
   const assigneeRef = useRef<HTMLDivElement>(null);
 
-  const canEdit = task && (
+  const canEdit = !readOnly && task && (
     currentRole === 'Admin' || currentRole === 'Manager' ||
     task.createdBy === user?.id || task.assigneeId === user?.id
   );
-  const canDelete = currentRole === 'Admin' || currentRole === 'Manager';
+  const canDelete = !readOnly && (currentRole === 'Admin' || currentRole === 'Manager');
 
-  const canChangeStatus = currentRole === 'Admin' || currentRole === 'Manager' || task?.assigneeId === user?.id;
+  const canChangeStatus = !readOnly && (currentRole === 'Admin' || currentRole === 'Manager' || task?.assigneeId === user?.id);
 
   const handleStatusChange = async (newStatus: string) => {
     if (!task) return;
@@ -403,7 +404,7 @@ export default function TaskDetailSheet({ open, onClose, task, onUpdated, onDele
               <ActivityTab taskId={task.id} />
             ) : (
               <div style={{ padding: '8px 0' }}>
-                <CommentThread taskId={task.id} />
+                <CommentThread taskId={task.id} readOnly={readOnly} />
               </div>
             )}
           </div>

@@ -1709,8 +1709,8 @@ Layout: `flex items-center gap-2`, căn trái search — căn phải filter grou
 | **Uu tien: Tat ca** | Native `<select>` w/ custom chevron | Filter by `priority` (Low/Medium/High/Urgent) |
 | **Date From - Date To** | Two `<input type="date">` (h-9, w-140px each) | Filter tasks where `due_date` within range |
 | **Refresh** | Icon button (h-9 w-9, border) | Silent refetch (`loadTasks(true)`), spinner while `isRefreshing` |
-| **Xoa bo loc** | Text button (visible only when `hasActiveFilters`) | Resets all filters |
-| **+ Them Task** | Dark button (`bg-gray-900 hover:bg-gray-800`, h-9, right-aligned) | Opens `TaskFormSheet` slide-over, Admin/Manager only |
+| **Xoa bo loc** | Text button (visible only when `hasActiveFilters`) | Resets all filters, đặt ngay sau nút Refresh |
+| **+ Them Task** | Dark button (`bg-gray-900 hover:bg-gray-800`, h-9) | Nằm liền kề nút Xóa bộ lọc (hoặc nút Refresh), không canh phải |
 
 **Filter count hint** (below bar, when active):
 `"Dang hien thi X / Y task"` — text-xs text-text-muted
@@ -1720,7 +1720,9 @@ Layout: `flex items-center gap-2`, căn trái search — căn phải filter grou
 - Re-fetched **silently** after status change or task creation
 - No API round-trip per filter change — instant UX
 
-#### Column Headers
+#### Columns Layout & Headers
+
+- Layout: Flex container với thuộc tính `flex: 1` và `min-width: 280px` để cột tự động co giãn lấp đầy khoảng trống (grow) nhưng không bị ép quá nhỏ gọn.
 
 ```
 ● TO DO   3
@@ -1732,7 +1734,7 @@ Layout: `flex items-center gap-2`, căn trái search — căn phải filter grou
 - Colored dot (`w-2 h-2 rounded-full`) — color matches `--status-*` CSS variable
 - Label: `text-xs font-bold uppercase tracking-widest`, **same color as dot** (not grey)
 - Count: `text-xs font-semibold text-text-muted` — plain number, no pill/badge background
-- Layout: `flex items-center gap-2 px-1 pb-3`
+- Header Layout: `flex items-center gap-2 px-1 pb-3`
 
 #### Task Card (Kanban) — 4-row layout
 
@@ -1817,9 +1819,10 @@ Row 4: [Avatar] Name        Due Date   (space-between, text-sm)
 | Trần B | 5 | 5 | 0 | 100% |
 | Lê C | 0 | 0 | 0 | N/A |
 
-- **Click tên member:** Mở My Tasks của member đó (read-only)
+- **Click dòng member (entire row):** Mở My Tasks của member đó (read-only)
   - Read-only: KHÔNG hiển thị nút edit/delete/comment
-  - Breadcrumb: "Báo cáo > [Tên member]"
+  - Layout: Full width (không giới hạn maxWidth)
+  - Breadcrumb/Header: "Báo cáo > Công việc của thành viên" kèm badge nổi bật "Chỉ xem (Read-only)"
 - **Permission:** Chỉ Admin/Manager
 - **Empty workspace:** Chart hiển thị 0 tất cả tuần + empty state text
 

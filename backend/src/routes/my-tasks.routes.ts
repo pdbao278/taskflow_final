@@ -45,12 +45,21 @@ router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
       return;
     }
 
-    const { status } = req.query;
+    const { status, userId } = req.query;
+
+    let targetUserId = req.user!.userId;
+    if (userId && typeof userId === 'string' && userId !== req.user!.userId) {
+      if (member.role !== 'Admin' && member.role !== 'Manager') {
+        res.status(403).json({ success: false, error: 'Forbidden' });
+        return;
+      }
+      targetUserId = userId;
+    }
     
     // Base where: workspace, assigned to user, not deleted, not Done
     const whereClause: any = {
       workspaceId,
-      assigneeId: req.user!.userId,
+      assigneeId: targetUserId,
       deletedAt: null,
       status: { not: 'Done' }
     };

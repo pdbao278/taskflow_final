@@ -88,6 +88,48 @@ router.get('/my', async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
+// ─── GET /api/tasks/team — all active tasks in workspace (Admin/Manager only) ──
+router.get('/team', async (req: AuthRequest, res: Response): Promise<void> => {
+  const workspaceId = req.headers['x-workspace-id'] as string;
+  if (!workspaceId) {
+    res.status(400).json({ success: false, error: 'x-workspace-id header required' });
+    return;
+  }
+
+  try {
+    const member = await getWorkspaceMember(workspaceId, req.user!.userId);
+    if (!member || (member.role !== 'Admin' && member.role !== 'Manager')) {
+      res.status(403).json({ success: false, error: 'Forbidden' });
+      return;
+    }
+
+    const tasks = await prisma.task.findMany({
+      where: {
+        workspaceId,
+        deletedAt: null,
+      },
+      include: {
+        project: { select: { id: true, name: true, color: true } },
+        creator: { select: { id: true, name: true } },
+        assignee: { select: { id: true, name: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const tasksWithOverdue = tasks.map(t => ({
+      ...t,
+      isOverdue: isOverdue(t.dueDate),
+    }));
+
+    const finalTasks = await attachAssigneeStatus(workspaceId, tasksWithOverdue);
+
+    res.json({ success: true, data: { tasks: finalTasks } });
+  } catch (err) {
+    console.error('List team tasks error:', err);
+    res.status(500).json({ success: false, error: 'Có lỗi xảy ra. Thử lại?' });
+  }
+});
+
 // ─── GET /api/tasks/trash — list soft-deleted tasks (Admin only, < 30 days) ───
 router.get('/trash', async (req: AuthRequest, res: Response): Promise<void> => {
   const workspaceId = req.headers['x-workspace-id'] as string;

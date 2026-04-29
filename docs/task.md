@@ -891,7 +891,8 @@ Then:
 |---|---|---|
 | Đổi status qua dropdown | Click status badge → chọn mới | UI cập nhật ngay + toast.success("Đã đổi trạng thái thành [Status]") |
 | Đổi status qua drag-drop Kanban | Kéo task card sang cột khác | Task move + toast.success + activity log tạo |
-| Permission check | Member thử đổi task người khác | Nút disabled, tooltip hiện |
+| Permission check dropdown | Member xem task người khác ở TaskDetail | Nút dropdown bị disabled, hiện tooltip "Chỉ assignee hoặc Manager mới có thể đổi trạng thái" |
+| Permission check Kanban | Member kéo task người khác ở Kanban | Task card bị mờ (opacity), không thể kéo, hiện tooltip "Chỉ assignee hoặc Manager mới có thể đổi trạng thái" |
 | Optimistic rollback | Giả lập API lỗi | UI rollback, toast.error |
 
 #### Checklist FR-05 ✅ Definition of Done

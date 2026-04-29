@@ -1,12 +1,13 @@
 'use client';
 
-import { Calendar, AlertTriangle } from 'lucide-react';
+import { Calendar, AlertTriangle, CalendarX2 } from 'lucide-react';
 import type { Task } from '../stores/task.store';
 
 interface TaskCardProps {
   task: Task;
   onClick?: (task: Task) => void;
   dragDisabled?: boolean;
+  variant?: 'kanban' | 'list-row';
 }
 
 const PRIORITY_STYLES: Record<string, { bg: string; color: string; label: string }> = {
@@ -32,13 +33,93 @@ function formatDueDate(dateStr: string | null): string {
   return `${day}/${month}/${year}`;
 }
 
-export default function TaskCard({ task, onClick, dragDisabled }: TaskCardProps) {
+export default function TaskCard({ task, onClick, dragDisabled, variant = 'kanban' }: TaskCardProps) {
   const priority = PRIORITY_STYLES[task.priority] ?? PRIORITY_STYLES.Medium;
   const status = STATUS_STYLES[task.status] ?? STATUS_STYLES.ToDo;
   const isOverdue = task.isOverdue && task.status !== 'Done';
   
   const isRemovedUser = task.isAssigneeRemoved;
 
+  if (variant === 'list-row') {
+    return (
+      <div
+        onClick={() => onClick?.(task)}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+          padding: '12px 16px',
+          background: 'white',
+          border: '1px solid var(--border)',
+          borderRadius: '8px',
+          borderLeft: isOverdue ? '4px solid var(--destructive)' : '4px solid transparent',
+          cursor: 'pointer',
+          transition: 'background 0.15s, box-shadow 0.15s',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'var(--surface-hover)';
+          e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.05)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'white';
+          e.currentTarget.style.boxShadow = 'none';
+        }}
+      >
+        {/* Row 1: Project & Due Date */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', minHeight: '16px' }}>
+          {/* Project */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            {task.project ? (
+              <>
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: task.project.color }} />
+                <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500 }}>{task.project.name}</span>
+              </>
+            ) : (
+              <span style={{ fontSize: '12px', color: 'transparent' }}>-</span>
+            )}
+          </div>
+          
+          {/* Due date */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: isOverdue ? 500 : 400, color: isOverdue ? 'var(--destructive)' : 'var(--text-muted)' }}>
+            <Calendar size={12} />
+            {task.dueDate ? formatDueDate(task.dueDate) : ''}
+          </div>
+        </div>
+
+        {/* Row 2: Title & Badges */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
+          {/* Title */}
+          <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1 }}>
+            {task.title}
+          </span>
+
+          {/* Badges */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+            {/* StatusBadge */}
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 600, padding: '2px 8px', borderRadius: '9999px', background: status.bg, color: status.color }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: status.dot, flexShrink: 0 }} />
+              {status.label}
+            </span>
+
+            {/* PriorityBadge */}
+            <span style={{ display: 'inline-flex', alignItems: 'center', fontSize: '12px', fontWeight: 600, padding: '2px 8px', borderRadius: '9999px', background: priority.bg, color: priority.color }}>
+              {priority.label}
+            </span>
+
+            {/* OverdueBadge */}
+            {isOverdue && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 600, padding: '2px 8px', borderRadius: '9999px', background: 'hsl(0 84% 60% / 0.1)', color: 'var(--destructive)' }}>
+                <CalendarX2 size={12} />
+                Overdue
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // kanban variant
   return (
     <div
       onClick={() => onClick?.(task)}

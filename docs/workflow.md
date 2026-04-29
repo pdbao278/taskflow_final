@@ -53,9 +53,9 @@ Tự động tham chiếu requirements.md và design-system.md tương ứng.
 Thực thi toàn bộ Backend, Frontend và Testing.
 Khi hoàn thành, dùng browser tool kiểm tra giao diện và in ra checklist "Acceptance Gate M2" (đánh dấu [x] các mục đã xong) để báo cáo. Bắt đầu thực hiện FR-06.
 
-LỆNH THỰC THI: MILESTONE M3
-Đọc kỹ file docs/task.md phần "Milestone M3 — Dashboards". Chú ý quy tắc BẮT BUỘC thực hiện tuần tự: FR-07 -> FR-08 -> FR-11 -> FR-13.
-Tự động tham chiếu requirements.md và design-system.md tương ứng.
+
+Đọc kỹ file docs/task.md phần "Milestone M3 — Dashboards". .Luôn ghi nhớ Hướng dẫn giành cho AI. Nạp ngữ cảnh 2 file requirement.md và design-system.md .Thực hiện lần lượt chi tiết từng FR, mỗi FR bám sát 2 file ngữ  cảnh tương ứng không được bịa, không được bỏ sót.Làm xong hết kiểm tra pass 100% rồi mới được qua làm FR khác.
+
 Thực thi toàn bộ Backend, Frontend và Testing.
 Khi hoàn thành, dùng browser tool kiểm tra giao diện và in ra checklist "Acceptance Gate M3" (đánh dấu [x] các mục đã xong) để báo cáo. Bắt đầu thực hiện FR-07.
 

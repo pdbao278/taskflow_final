@@ -289,30 +289,21 @@ Dùng cho: `/login`, `/register`, `/invite?token=xxx`
 
 Dùng cho: Tất cả route `/app/*`
 
-```
+`
 ┌──────────┬──────────────────────────────────────────────┐
 │          │  Header                                       │
-│          �```
-┌──────────────────────────────────┐
-│ [] Tên workspace  [Admin] ▾      │  ← 1 dòng: icon + tên + RoleBadge + chevron
-├──────────────────────────────────┤
-│ [+ Tạo task]                     │  ← Nút primary (Admin, Manager)
-├──────────────────────────────────┤
-│ 📋 Công việc của tôi             │  ← /app/my-tasks     (All roles)
-│ 👥 Kanban Team                   │  ← /app/team         (Admin, Manager)
-│ 📁 Dự án                        │  ← /app/projects     (All roles)
-│ 📊 Báo cáo                      │  ← /app/reports      (Admin, Manager)
-├──────────────────────────────────┤
-│ ⚙️ Cài đặt                       │  ← /app/settings          (Admin only)
-│ 👥 Thành viên                    │  ← /app/settings/members  (Admin only)
-│ 🗑️ Thùng rác                     │  ← /app/trash             (Admin only)
-└──────────────────────────────────┘
-```��  │  (task detail)     │  │
-│          │  │                  │  │  width: 480px      │  │
+│          ├──────────────────────────────────────────────┤
+│ Sidebar  │  Main Content                                 │
+│ (256px)  │                                               │
+│          │  ┌─────────────────┐  ┌────────────────────┐  │
+│          │  │                 │  │                    │  │
+│          │  │   Page Title    │  │   Slide-over       │  │
+│          │  │                 │  │   (task detail)    │  │
+│          │  │                 │  │   width: 480px     │  │
 │          │  └─────────────────┘  └────────────────────┘  │
 │          │                                               │
 └──────────┴──────────────────────────────────────────────┘
-```
+`
 
 - Sidebar: `width: 256px` (expanded) / `64px` (collapsed) / hidden (mobile)
 - Header: `height: 56px`, sticky top, z-index: `z-sticky`
@@ -747,22 +738,18 @@ Có **2 variant** tùy context sử dụng:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│ ▌ Fix responsive layout     ● Website   📅 Overdue  25/04  [Cao]  │
-│                                                                     │
-│   ← border-left đỏ (Overdue)   ← Title    ← Project  ← Due   ← Priority │
+│ ▌ ● Website                                                📅 25/04  │
+│   Fix responsive layout                [To Do] [Medium] [Overdue]    │
 └──────────────────────────────────────────────────────────────────────┘
+  ↑ border-left đỏ (Overdue)
 ```
 
-**Layout chi tiết:**
+**Layout chi tiết — 2 dòng:**
 
-| Vùng | Nội dung | Style |
+| Dòng | Nội dung | Style |
 |------|----------|-------|
-| **Title** | Tiêu đề task | `text-sm`, `font-medium`, `text-text-primary`, `truncate` |
-| **Project** | Color dot + Tên project | `text-xs`, `text-text-secondary`, inline |
-| **Due date** | Ngày hết hạn (dd/mm format) | `text-xs`, `text-text-muted`. Quá hạn → `text-destructive font-medium` |
-| **OverdueBadge** | Icon `CalendarX2` + "Overdue" | `text-xs`, `text-destructive`, chỉ hiện khi `due_date < now && status !== Done` |
-| **PriorityBadge** | Label theo mức ưu tiên | Badge style (xem bảng bên dưới) |
-| **StatusBadge** | Trạng thái hiện tại | Badge màu status (xem bảng bên dưới) |
+| **Dòng 1** | **Trái:** Color dot + Tên project. **Phải:** Icon 📅 + Ngày hết hạn. Nếu không có ngày hết hạn thì chỉ hiện mỗi icon 📅. | `flex justify-between items-center mb-1`. Project: `text-xs text-text-secondary flex items-center gap-1.5`. Due date: `text-xs text-text-muted flex items-center gap-1` (quá hạn → `text-destructive font-medium`). |
+| **Dòng 2** | **Trái:** Tiêu đề task. **Phải:** Các trạng thái (`StatusBadge`, `PriorityBadge`, `OverdueBadge` nếu có). | `flex justify-between items-center`. Title: `text-sm font-medium text-text-primary truncate mr-4`. Badges: `flex gap-2` (dùng style mini badge giống Kanban). |
 
 #### Thông tin hiển thị trên card
 

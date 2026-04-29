@@ -10,6 +10,7 @@ import inviteRoutes from './routes/invite.routes';
 import projectRoutes from './routes/project.routes';
 import taskRoutes from './routes/task.routes';
 import notificationRoutes from './routes/notification.routes';
+import myTasksRoutes from './routes/my-tasks.routes';
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use('/api/workspaces', workspaceRoutes);
 app.use('/api/invite', inviteRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/tasks', taskRoutes);
+app.use('/api/my-tasks', myTasksRoutes);
 app.use('/api/notifications', notificationRoutes);
 
 // ─── Error Handler ────────────────────────────────────────────────────────────

@@ -2,6 +2,47 @@
 
 ---
 
+## 📑 Mục lục nhanh (Index for AI)
+
+> **Dành cho AI:** Sử dụng mục lục này để tra cứu nhanh các Milestone (M), Feature Request (FR) và Non-Functional Requirement (NFR). Hãy click vào link hoặc tìm kiếm (search) chính xác các tiêu đề này trong file thay vì đọc toàn bộ.
+
+- **[Milestone M0 — Setup & Core Database + Authentication](#milestone-m0-—-setup--core-database--authentication)**
+  - [FR-01: Authentication (P0)](#fr-01-authentication-p0)
+    - [NFR áp dụng cho M0](#nfr-áp-dụng-cho-m0)
+- **[Milestone M1 — Core CRUD](#milestone-m1-—-core-crud)**
+  - [FR-02: Workspace & Member Management (P0)](#fr-02-workspace--member-management-p0)
+    - [NFR áp dụng cho FR-02](#nfr-áp-dụng-cho-fr-02)
+  - [FR-03: Quản lý Project (P0)](#fr-03-quản-lý-project-p0)
+  - [FR-04: Tạo và chỉnh sửa Task (P0)](#fr-04-tạo-và-chỉnh-sửa-task-p0)
+  - [FR-05: Chuyển trạng thái Task (P0)](#fr-05-chuyển-trạng-thái-task-p0)
+- **[Milestone M2 — Collaboration](#milestone-m2-—-collaboration)**
+  - [FR-06: Comment trong Task (P0)](#fr-06-comment-trong-task-p0)
+    - [NFR áp dụng cho FR-06](#nfr-áp-dụng-cho-fr-06)
+  - [FR-09: Thông báo In-App (P1)](#fr-09-thông-báo-in-app-p1)
+    - [NFR áp dụng cho FR-09](#nfr-áp-dụng-cho-fr-09)
+  - [FR-10: Activity Log trong Task (P1)](#fr-10-activity-log-trong-task-p1)
+- **[Milestone M3 — Dashboards](#milestone-m3-—-dashboards)**
+  - [FR-07: Dashboard cá nhân - My Tasks (P0)](#fr-07-dashboard-cá-nhân---my-tasks-p0)
+    - [NFR áp dụng cho FR-07](#nfr-áp-dụng-cho-fr-07)
+  - [FR-08: Dashboard Team - Kanban Board (P0)](#fr-08-dashboard-team---kanban-board-p0)
+    - [NFR áp dụng cho FR-08](#nfr-áp-dụng-cho-fr-08)
+  - [FR-11: Báo cáo Team (P1)](#fr-11-báo-cáo-team-p1)
+  - [FR-13: Thùng Rác - Trash Bin (P1)](#fr-13-thùng-rác---trash-bin-p1)
+    - [NFR áp dụng cho FR-13](#nfr-áp-dụng-cho-fr-13)
+- **[Milestone M4 — Polish & QA](#milestone-m4-—-polish--qa)**
+  - [FR-12: Search toàn cục (P2)](#fr-12-search-toàn-cục-p2)
+    - [NFR-01: Performance](#nfr-01-performance)
+    - [NFR-02: Availability](#nfr-02-availability)
+    - [NFR-03: Security](#nfr-03-security)
+    - [NFR-04: Scalability](#nfr-04-scalability)
+    - [NFR-05: Usability](#nfr-05-usability)
+    - [NFR-06: Accessibility](#nfr-06-accessibility)
+    - [NFR-07: Data Integrity](#nfr-07-data-integrity)
+    - [NFR-08: Browser Support](#nfr-08-browser-support)
+- **[Milestone M5 — Deploy MVP](#milestone-m5-—-deploy-mvp)**
+
+---
+
 ## 🤖 Hướng dẫn cho AI Coding Agent (Phải luôn ghi nhớ)
 
 > **Context Bắt Buộc:** Trước khi bắt đầu làm việc, bạn **PHẢI** đọc hai file sau để nạp context:
@@ -35,6 +76,8 @@
 > - **Node.js**: `v22.x`
 > - **Route prefix**: Tất cả trang app dùng prefix `/app/` (vd: `/app/my-tasks`, `/app/projects`). Thư mục nguồn là `src/app/app/`.
 > - **Invite flow**: Xem spec đầy đủ tại `requirements.md §FR-02`. Endpoints: `GET /api/invite?token`, `POST /api/invite/accept`, `POST /api/invite/register-and-accept`. Frontend: `/invite?token=xxx`.
+
+---
 
 ## Milestone M0 — Setup & Core Database + Authentication
 

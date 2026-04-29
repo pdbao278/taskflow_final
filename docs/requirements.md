@@ -4,7 +4,7 @@
 
 ---
 
-## Mục lục
+## 📑 Mục lục nhanh (Index for AI)
 
 1. [Overview](#1-overview)
 2. [Tech Stack](#2-tech-stack)

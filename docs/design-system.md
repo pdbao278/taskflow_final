@@ -7,7 +7,7 @@
 
 ---
 
-## Mục lục
+## 📑 Mục lục nhanh (Index for AI)
 
 1. [Mục tiêu hệ thống thiết kế](#1-mục-tiêu-hệ-thống-thiết-kế)
 2. [Nền tảng thị giác](#2-nền-tảng-thị-giác)
